@@ -15,6 +15,8 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
+import React, { useState, useEffect } from 'react';
+import moment from 'moment'
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -46,7 +48,7 @@ import ReferralTracking from "layouts/dashboard/components/ReferralTracking";
 
 // React icons
 import { IoIosRocket } from "react-icons/io";
-import { IoGlobe } from "react-icons/io5";
+import { IoConstructOutline, IoGlobe } from "react-icons/io5";
 import { IoBuild } from "react-icons/io5";
 import { IoWallet } from "react-icons/io5";
 import { IoDocumentText } from "react-icons/io5";
@@ -56,13 +58,120 @@ import { FaShoppingCart } from "react-icons/fa";
 import LineChart from "examples/Charts/LineCharts/LineChart";
 import BarChart from "examples/Charts/BarCharts/BarChart";
 import { lineChartDataDashboard } from "layouts/dashboard/data/lineChartData";
+// import historyFloorPriceData from "layouts/dashboard/data/historyFloorPriceData";
+import { historyFloorPriceOptionsDashboard } from "layouts/dashboard/data/historyFloorPriceOptions";
 import { lineChartOptionsDashboard } from "layouts/dashboard/data/lineChartOptions";
 import { barChartDataDashboard } from "layouts/dashboard/data/barChartData";
 import { barChartOptionsDashboard } from "layouts/dashboard/data/barChartOptions";
 
-function Dashboard() {
+
+function getChangeAvgPrice24Hours(data){
+  const a = data[data.length - 1].metadata.avgPrice24hr
+  const b = data[0].metadata.avgPrice24hr;
+
+  const diff = 100 * Math.abs( ( a - b ) / ( (a+b)/2 ) )
+  return  diff.toFixed(2);
+}
+
+function getChangeVolume24Hours(data){
+  const a = data[data.length - 1].metadata.volume24hr
+  const b = data[0].metadata.volume24hr;
+
+  const diff = 100 * Math.abs( ( a - b ) / ( (a+b)/2 ) )
+  return  diff.toFixed(2);
+}
+
+function getChangeListedCount(data){
+  const a = data[data.length - 1].metadata.listedCount
+  const b = data[0].metadata.listedCount;
+
+  const diff = 100 * Math.abs( ( a - b ) / ( (a+b)/2 ) )
+  return  diff.toFixed(2);
+}
+
+function getChangeFloorPrice(data){
+  const a = data[data.length - 1].metadata.floorPrice;
+  const b = data[0].metadata.floorPrice;
+
+  const diff = 100 * Math.abs( ( a - b ) / ( (a+b)/2 ) )
+  return  diff.toFixed(2);
+}
+
+export default function Dashboard() {
   const { gradients } = colors;
   const { cardContent } = gradients;
+  
+  const [symbol, setSymbol] = useState('degenerate_ape_academy');
+  const [collectionData, setCollectionData] = useState({});
+  const [collectionHistoryData, setCollectionHistoryData] = useState([]);
+  const [historyFloorData, setHistoryFloorData] = useState([]);
+  const [historyListingsData, setHistoryListingsData] = useState([]);
+
+  const [isCollectionReady, setIsCollectionReady] = useState(false);
+  const [change24HourPrice, setChange24HourPrice] = useState(0);
+  const [change24HourVolume, setChange24HourVolume] = useState(0); 
+  const [changeListedCount, setChangeListedCount] = useState(0);
+  const [changeFloorPrice, setChangeFloorPrice] = useState(0);
+
+  const [avgPrice24hr, setAvgPrice24hr] = useState(0);
+  const [floorPrice, setFloorPrice] = useState(0);
+  const [listedCount, setListedCount] = useState(0);
+  const [listedTotalValue, setListedTotalValue] = useState(0);  
+  const [volume24hr, setVolume24hr] = useState(0); 
+  const [volumeAll, setVolumeAll] = useState(0); 
+
+  // get collection basic data info
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
+      .then(res => res.json())
+      .then(result => {
+        setCollectionData(result);
+      });
+
+    // get timeseries data
+    fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/history/complete`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data) // TODO remove;
+        const floorHistoryArr = [];
+        const historyListingsArr = [];
+
+        setCollectionHistoryData(data);
+        setIsCollectionReady(true);
+
+        setChange24HourPrice(getChangeAvgPrice24Hours(data));
+        setChange24HourVolume(getChangeVolume24Hours(data));
+        setChangeListedCount(getChangeListedCount(data));
+        setChangeFloorPrice(getChangeFloorPrice(data));
+        
+        const recentData = data[0].metadata;
+        setAvgPrice24hr((recentData.avgPrice24hr / 1e9).toFixed(2));
+        setFloorPrice((recentData.floorPrice / 1e9).toFixed(2));
+        setListedCount((recentData.listedCount).toFixed(2));
+        setListedTotalValue((recentData.listedTotalValue / 1e9).toFixed(2));  
+        setVolume24hr((recentData.volume24hr / 1e9).toFixed(2)); 
+        setVolumeAll((recentData.volumeAll / 1e9).toFixed(2));
+
+        data.slice().reverse()
+          .forEach((it, idx) => {
+            // if (idx % Math.floor(limit.value / 20) !== 0) return;
+
+            floorHistoryArr.push({
+              x: it.timestamp, // dateFormatter(it.timestamp),
+              y: it.metadata.floorPrice / 1e9,
+            });
+
+            historyListingsArr.push({
+              x: it.timestamp, //dateFormatter(it.timestamp),
+              y: it.metadata.listedCount,
+            });
+          }); 
+
+        // setHistoryFloorData([{data: floorHistoryArr}]);
+        setHistoryFloorData([{data: floorHistoryArr}]);
+        setHistoryListingsData([{data: historyListingsArr}]);
+      }); 
+  }, [symbol]);
 
   return (
     <DashboardLayout>
@@ -72,33 +181,33 @@ function Dashboard() {
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} xl={3}>
               <MiniStatisticsCard
-                title={{ text: "today's money", fontWeight: "regular" }}
-                count="$53,000"
-                percentage={{ color: "success", text: "+55%" }}
+                title={{ text: "24h Avg Price", fontWeight: "regular" }}
+                count={`${avgPrice24hr}`}
+                percentage={{ color: (change24HourPrice < 0) ?  "error" : "success", text: `${change24HourPrice}%` }}
                 icon={{ color: "info", component: <IoWallet size="22px" color="white" /> }}
               />
             </Grid>
             <Grid item xs={12} md={6} xl={3}>
               <MiniStatisticsCard
-                title={{ text: "today's users" }}
-                count="2,300"
-                percentage={{ color: "success", text: "+3%" }}
+                title={{ text: "24h Avg volume" }}
+                count={`${volume24hr}`}
+                percentage={{ color: (change24HourVolume < 0) ?  "error" : "success", text: `${change24HourVolume}%` }}
                 icon={{ color: "info", component: <IoGlobe size="22px" color="white" /> }}
               />
             </Grid>
             <Grid item xs={12} md={6} xl={3}>
               <MiniStatisticsCard
-                title={{ text: "new clients" }}
-                count="+3,462"
-                percentage={{ color: "error", text: "-2%" }}
+                title={{ text: "Listed NFTs" }}
+                count={`${listedCount}`}
+                percentage={{ color: (changeListedCount < 0) ?  "error" : "success", text: `${changeListedCount}%` }} 
                 icon={{ color: "info", component: <IoDocumentText size="22px" color="white" /> }}
               />
             </Grid>
             <Grid item xs={12} md={6} xl={3}>
               <MiniStatisticsCard
-                title={{ text: "total sales" }}
-                count="$103,430"
-                percentage={{ color: "success", text: "+5%" }}
+                title={{ text: "Floor price" }}
+                count={ `${floorPrice}` } 
+                percentage={{ color: (change24HourVolume < 0) ?  "error" : "success", text: `${changeFloorPrice}%` }}
                 icon={{ color: "info", component: <FaShoppingCart size="20px" color="white" /> }}
               />
             </Grid>
@@ -123,7 +232,7 @@ function Dashboard() {
               <Card>
                 <VuiBox sx={{ height: "100%" }}>
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
-                    Sales Overview
+                    Floor price history
                   </VuiTypography>
                   <VuiBox display="flex" alignItems="center" mb="40px">
                     <VuiTypography variant="button" color="success" fontWeight="bold">
@@ -135,8 +244,8 @@ function Dashboard() {
                   </VuiBox>
                   <VuiBox sx={{ height: "310px" }}>
                     <LineChart
-                      lineChartData={lineChartDataDashboard}
-                      lineChartOptions={lineChartOptionsDashboard}
+                      lineChartData={historyFloorData}
+                      lineChartOptions={historyFloorPriceOptionsDashboard}
                     />
                   </VuiBox>
                 </VuiBox>
@@ -289,5 +398,3 @@ function Dashboard() {
     </DashboardLayout>
   );
 }
-
-export default Dashboard;

@@ -108,7 +108,7 @@ export default function authorsTableData() {
           setError(error);
         }
       )
-  }, [items]);
+  }, []);
 
   return {
     columns: [

@@ -30,11 +30,11 @@ import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
 
 // Data
-import authorsTableData from "layouts/tables/data/authorsTableData";
+import collectionsTableData from "layouts/tables/data/collectionsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 
 function Tables() {
-  const { columns, rows } = authorsTableData();
+  const { columns, rows } = collectionsTableData();
   const { columns: prCols, rows: prRows } = projectsTableData;
 
   return (
