@@ -51,6 +51,7 @@ import { IoIosRocket } from "react-icons/io";
 import { IoConstructOutline, IoGlobe } from "react-icons/io5";
 import { IoBuild } from "react-icons/io5";
 import { IoWallet } from "react-icons/io5";
+import { VscRocket } from "react-icons/vsc"
 import { IoDocumentText } from "react-icons/io5";
 import { FaShoppingCart } from "react-icons/fa";
 
@@ -65,33 +66,9 @@ import { barChartDataDashboard } from "layouts/dashboard/data/barChartData";
 import { barChartOptionsDashboard } from "layouts/dashboard/data/barChartOptions";
 
 
-function getChangeAvgPrice24Hours(data){
-  const a = data[data.length - 1].metadata.avgPrice24hr
-  const b = data[0].metadata.avgPrice24hr;
-
-  const diff = 100 * Math.abs( ( a - b ) / ( (a+b)/2 ) )
-  return  diff.toFixed(2);
-}
-
-function getChangeVolume24Hours(data){
-  const a = data[data.length - 1].metadata.volume24hr
-  const b = data[0].metadata.volume24hr;
-
-  const diff = 100 * Math.abs( ( a - b ) / ( (a+b)/2 ) )
-  return  diff.toFixed(2);
-}
-
-function getChangeListedCount(data){
-  const a = data[data.length - 1].metadata.listedCount
-  const b = data[0].metadata.listedCount;
-
-  const diff = 100 * Math.abs( ( a - b ) / ( (a+b)/2 ) )
-  return  diff.toFixed(2);
-}
-
-function getChangeFloorPrice(data){
-  const a = data[data.length - 1].metadata.floorPrice;
-  const b = data[0].metadata.floorPrice;
+function getChangeForAttr(data, attr){
+  const a = data[data.length - 1].metadata[attr];
+  const b = data[0].metadata[attr];
 
   const diff = 100 * Math.abs( ( a - b ) / ( (a+b)/2 ) )
   return  diff.toFixed(2);
@@ -101,7 +78,7 @@ export default function Dashboard() {
   const { gradients } = colors;
   const { cardContent } = gradients;
   
-  const [symbol, setSymbol] = useState('degenerate_ape_academy');
+  const [symbol, setSymbol] = useState('infinity_serpents');
   const [collectionData, setCollectionData] = useState({});
   const [collectionHistoryData, setCollectionHistoryData] = useState([]);
   const [historyFloorData, setHistoryFloorData] = useState([]);
@@ -139,35 +116,33 @@ export default function Dashboard() {
         setCollectionHistoryData(data);
         setIsCollectionReady(true);
 
-        setChange24HourPrice(getChangeAvgPrice24Hours(data));
-        setChange24HourVolume(getChangeVolume24Hours(data));
-        setChangeListedCount(getChangeListedCount(data));
-        setChangeFloorPrice(getChangeFloorPrice(data));
+        setChange24HourPrice(getChangeForAttr(data,'avgPrice24hr'));
+        setChange24HourVolume(getChangeForAttr(data, 'volume24hr'));
+        setChangeListedCount(getChangeForAttr(data, 'listedCount'));
+        setChangeFloorPrice(getChangeForAttr(data, 'floorPrice'));
         
         const recentData = data[0].metadata;
         setAvgPrice24hr((recentData.avgPrice24hr / 1e9).toFixed(2));
         setFloorPrice((recentData.floorPrice / 1e9).toFixed(2));
-        setListedCount((recentData.listedCount).toFixed(2));
+        setListedCount(Math.round(recentData.listedCount));
         setListedTotalValue((recentData.listedTotalValue / 1e9).toFixed(2));  
         setVolume24hr((recentData.volume24hr / 1e9).toFixed(2)); 
         setVolumeAll((recentData.volumeAll / 1e9).toFixed(2));
 
         data.slice().reverse()
           .forEach((it, idx) => {
-            // if (idx % Math.floor(limit.value / 20) !== 0) return;
 
             floorHistoryArr.push({
-              x: it.timestamp, // dateFormatter(it.timestamp),
+              x: it.timestamp, 
               y: it.metadata.floorPrice / 1e9,
             });
 
             historyListingsArr.push({
-              x: it.timestamp, //dateFormatter(it.timestamp),
+              x: it.timestamp, 
               y: it.metadata.listedCount,
             });
           }); 
 
-        // setHistoryFloorData([{data: floorHistoryArr}]);
         setHistoryFloorData([{data: floorHistoryArr}]);
         setHistoryListingsData([{data: historyListingsArr}]);
       }); 
@@ -213,7 +188,7 @@ export default function Dashboard() {
             </Grid>
           </Grid>
         </VuiBox>
-        <VuiBox mb={3}>
+        {/* <VuiBox mb={3}>
           <Grid container spacing="18px">
             <Grid item xs={12} lg={12} xl={5}>
               <WelcomeMark />
@@ -225,7 +200,7 @@ export default function Dashboard() {
               <ReferralTracking />
             </Grid>
           </Grid>
-        </VuiBox>
+        </VuiBox> */}
         <VuiBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={6} xl={7}>
