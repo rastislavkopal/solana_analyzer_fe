@@ -54,6 +54,7 @@ import { BsFillPersonFill } from "react-icons/bs";
 import { IoBuild } from "react-icons/io5";
 import { BsCreditCardFill } from "react-icons/bs";
 import { IoStatsChart } from "react-icons/io5";
+import { IoListCircle } from "react-icons/io5";
 import { IoHome } from "react-icons/io5";
 
 const routes = [
@@ -62,7 +63,7 @@ const routes = [
     name: "Collections",
     key: "collections",
     route: "/collections",
-    icon: <IoStatsChart size="15px" color="inherit" />,
+    icon: <IoListCircle size="15px" color="inherit" />,
     component: Tables,
     noCollapse: true,
   },
@@ -71,7 +72,7 @@ const routes = [
     name: "Dashboard",
     key: "dashboard",
     route: "/dashboard",
-    icon: <IoHome size="15px" color="inherit" />,
+    icon: <IoStatsChart size="15px" color="inherit" />,
     component: Dashboard,
     noCollapse: true,
   },

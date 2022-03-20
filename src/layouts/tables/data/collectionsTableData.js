@@ -62,39 +62,60 @@ export default function authorsTableData() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_BASE}/collection/`)
+    fetch(`${process.env.REACT_APP_API_BASE}/collection/mainPage`)
       .then(res => res.json())
       .then(
         (result) => {
           let its = [];
-          console.log(result);
           result.forEach((it, idx) => {
             its.push( {
-              collection: <Collection image={it.image} name={it.name} email={it.symbol} />,
-              function: <Function job="Manager" org="Organization" />,
-              status: (
-                <VuiBadge
-                  variant="standard"
-                  badgeContent="Online"
-                  color="success"
-                  size="xs"
-                  container
-                  sx={({ palette: { white, success }, borders: { borderRadius, borderWidth } }) => ({
-                    background: success.main,
-                    border: `${borderWidth[1]} solid ${success.main}`,
-                    borderRadius: borderRadius.md,
-                    color: white.main,
-                  })}
-                />
-              ),
-              itemsCount: (
+              collection: <Collection image={it.metadata.image} 
+                name={ it.metadata.symbol.replaceAll('_', ' ').replace(/(^\w|\s\w)/g, m => m.toUpperCase()) } 
+                email={ it.metadata.symbol } />,
+              // function: <Function job="Manager" org="Organization" />,
+              'floor price': (
                 <VuiTypography variant="caption" color="white" fontWeight="medium">
-                  {it.totalItems}
+                  {it.metadata.floorPrice / 1e9 }
+                </VuiTypography>
+              ),
+              'floor price change': (
+                <VuiTypography variant="caption" color={(it.metadata.floorPriceChange.charAt(0) === '-' ) ? "error" : "success" } fontWeight="medium">
+                  {it.metadata.floorPriceChange }
+                </VuiTypography>
+              ),
+              'volume 24h': (
+                <VuiTypography variant="caption" color="white" fontWeight="medium">
+                  { (it.metadata.volume24hr  / 1e9).toFixed(2) }
+                </VuiTypography>
+              ),
+              // status: (
+              //   <VuiBadge
+              //     variant="standard"
+              //     badgeContent="Online"
+              //     color="success"
+              //     size="xs"
+              //     container
+              //     sx={({ palette: { white, success }, borders: { borderRadius, borderWidth } }) => ({
+              //       background: success.main,
+              //       border: `${borderWidth[1]} solid ${success.main}`,
+              //       borderRadius: borderRadius.md,
+              //       color: white.main,
+              //     })}
+              //   />
+              // ),
+              'Listed count': (
+                <VuiTypography variant="caption" color="white" fontWeight="medium">
+                  {it.metadata.listedCount}
+                </VuiTypography>
+              ),
+              'items Count Change': (
+                <VuiTypography variant="caption" color={(it.metadata.listedCountChange.charAt(0) === '-' ) ? "error" : "success" } fontWeight="medium">
+                  {it.metadata.listedCountChange }
                 </VuiTypography>
               ),
               action: (
                 <VuiTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-                  Show history
+                  Stats
                 </VuiTypography>
               ),
             });
@@ -113,9 +134,12 @@ export default function authorsTableData() {
   return {
     columns: [
       { name: "collection", align: "left" },
-      { name: "function", align: "left" },
-      { name: "status", align: "center" },
-      { name: "itemsCount", align: "center" },
+      { name: "floor price", align: "center" }, 
+      { name: "floor price change", align: "center" }, 
+      { name: "volume 24h", align: "center" }, 
+      // { name: "status", align: "center" }, 
+      { name: "Listed count", align: "center" },
+      { name: "items Count Change", align: "center" },
       { name: "action", align: "center" },
     ],
   

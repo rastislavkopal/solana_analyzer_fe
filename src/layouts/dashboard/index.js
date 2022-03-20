@@ -78,7 +78,7 @@ export default function Dashboard() {
   const { gradients } = colors;
   const { cardContent } = gradients;
   
-  const [symbol, setSymbol] = useState('infinity_serpents');
+  const [symbol, setSymbol] = useState('degenerate_ape_academy');
   const [collectionData, setCollectionData] = useState({});
   const [collectionHistoryData, setCollectionHistoryData] = useState([]);
   const [historyFloorData, setHistoryFloorData] = useState([]);
@@ -134,7 +134,7 @@ export default function Dashboard() {
 
             floorHistoryArr.push({
               x: it.timestamp, 
-              y: it.metadata.floorPrice / 1e9,
+              y: (it.metadata.floorPrice / 1e9).toFixed(2),
             });
 
             historyListingsArr.push({
