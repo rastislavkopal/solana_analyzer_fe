@@ -79,6 +79,8 @@ export default function Dashboard() {
   const { cardContent } = gradients;
   
   const [symbol, setSymbol] = useState('project_tenjin');
+
+  const [collections, setCollections] = useState([]);
   const [collectionData, setCollectionData] = useState({});
   const [collectionHistoryData, setCollectionHistoryData] = useState([]);
   const [historyFloorData, setHistoryFloorData] = useState([]);
@@ -102,17 +104,22 @@ export default function Dashboard() {
   const [historyInterval, setHistoryInterval] = useState(15);
 
 
-
   const [collectionProcessedData, setCollectionProcessedData]= useState([]);
 
   // get collection basic data info
   useEffect(() => {
     try {
-      setInterval(async () => {
+      // setInterval(async () => {
         fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
         .then(res => res.json())
         .then(result => {
           setCollectionData(result);
+        });
+
+      fetch(`${process.env.REACT_APP_API_BASE}/collection`)
+        .then(res => res.json())
+        .then(result => {
+          setCollections(result);
         });
   
       fetch(`${process.env.REACT_APP_API_BASE}/collection/mainPage`)
@@ -174,7 +181,7 @@ export default function Dashboard() {
           setHistoryFloorData([{data: floorHistoryArr}]);
           setHistoryListingsData([{data: historyListingsArr}]);
         }); 
-      }, 5000);
+      // }, 5000);
     } catch(e) {
       console.log(e);
     } 
@@ -183,7 +190,7 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar />
+      <DashboardNavbar setSymbol={setSymbol} symbol={symbol} collections={collections} />
       <VuiBox py={3}>
         <VuiBox mb={3}>
           <Grid container spacing={3}>

@@ -26,7 +26,7 @@ import VuiBox from "components/VuiBox";
 import MasterCard from "examples/Cards/MasterCard";
 // Vision UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+// import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
 // Billing page components
@@ -39,7 +39,7 @@ import CreditBalance from "./components/CreditBalance";
 function Billing() {
   return (
     <DashboardLayout>
-      <DashboardNavbar />
+      {/* <DashboardNavbar /> */}
       <VuiBox mt={4}>
         <VuiBox mb={1.5}>
           <Grid container spacing={3}>

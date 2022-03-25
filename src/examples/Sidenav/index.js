@@ -236,7 +236,7 @@ function Sidenav({ color, brandName, routes, ...rest }) {
             color={color}
             fullWidth
           >
-            LATEST
+            CONTACT US
           </VuiButton>
         </VuiBox>
       </VuiBox>

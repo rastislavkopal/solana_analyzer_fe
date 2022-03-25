@@ -25,7 +25,7 @@ import VuiTypography from "components/VuiTypography";
 
 // Vision UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+// import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
 
@@ -39,7 +39,7 @@ function Tables() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar />
+      {/* <DashboardNavbar /> */}
       <VuiBox py={3}>
         <VuiBox mb={3}>
           <Card>

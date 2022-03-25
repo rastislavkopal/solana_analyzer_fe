@@ -36,6 +36,12 @@ import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
 import VuiInput from "components/VuiInput";
 
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Button from '@mui/material/Button';
+
 // Vision UI Dashboard React example components
 import Breadcrumbs from "examples/Breadcrumbs";
 import NotificationItem from "examples/Items/NotificationItem";
@@ -61,14 +67,47 @@ import {
 import team2 from "assets/images/team-2.jpg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 
-function DashboardNavbar({ absolute, light, isMini }) {
+
+export default function DashboardNavbar({ absolute, light, isMini, setSymbol, symbol, collections }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useVisionUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
 
+  const [selectedSymbol, setSelectedSymbol] = useState(symbol);
+  const [selectedSymbolName, setSelectedSymbolName] = useState(symbol);
+  const [open, setOpen] = useState(false);
+  const [selectMenu, setSelectMenu] = useState([]);
+
+  const handleSymbolChange = (event) => {
+    setSymbol(event.target.value);
+    setSelectedSymbol(event.target.value)
+    setSelectedSymbolName(event.target.label)
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
   useEffect(() => {
+    if (collections && collections.length > 0) {
+      const menu = collections.map((el, idx) => <MenuItem value={el.symbol}>{el.name}</MenuItem>);
+
+      // setSelectedSymbol(menu[0].props.value)
+      // setSelectedSymbolName(menu[0].props.value)
+      // setSymbol(menu[0].props.value)
+      setSelectMenu(menu);
+    }
+  }, [collections])
+
+  useEffect(() => {
+   
+
     // Setting the navbar type
     if (fixedNavbar) {
       setNavbarType("sticky");
@@ -147,10 +186,36 @@ function DashboardNavbar({ absolute, light, isMini }) {
       <Toolbar sx={(theme) => navbarContainer(theme)}>
         <VuiBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
           <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
+          {/* <VuiTypography
+            variant="button"
+            fontWeight="medium"
+            color={light ? "white" : "dark"}
+          >
+            {`Collection: ${symbol}`}
+          </VuiTypography> */}
         </VuiBox>
         {isMini ? null : (
           <VuiBox sx={(theme) => navbarRow(theme, { isMini })}>
             <VuiBox pr={1}>
+                <Button sx={{ display: 'block' }} onClick={handleOpen}></Button>
+                <FormControl sx={{ m: 1, minWidth: 120 }}>
+                  {/* <InputLabel id="demo-controlled-open-select-label">Symbol</InputLabel> */}
+                  <Select
+                    labelId="demo-controlled-open-select-label"
+                    id="demo-controlled-open-select"
+                    open={open}
+                    onClose={handleClose}
+                    onOpen={handleOpen}
+                    value={selectedSymbol}
+                    label={selectedSymbolName}
+                    defaultValue="" 
+                    onChange={handleSymbolChange}
+                  >
+                    {selectMenu}
+                  </Select>
+                </FormControl>
+            </VuiBox>
+            {/* <VuiBox pr={1}>
               <VuiInput
                 placeholder="Type here..."
                 icon={{ component: "search", direction: "left" }}
@@ -164,7 +229,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   backgroundColor: "info.main !important",
                 })}
               />
-            </VuiBox>
+            </VuiBox> */}
             <VuiBox color={light ? "white" : "inherit"}>
               <Link to="/authentication/sign-in">
                 <IconButton sx={navbarIconButton} size="small">
@@ -233,5 +298,3 @@ DashboardNavbar.propTypes = {
   light: PropTypes.bool,
   isMini: PropTypes.bool,
 };
-
-export default DashboardNavbar;

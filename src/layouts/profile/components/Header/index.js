@@ -35,7 +35,7 @@ import { IoCube } from "react-icons/io5";
 import { IoDocument } from "react-icons/io5";
 import { IoBuild } from "react-icons/io5";
 // Vision UI Dashboard React example components
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+// import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import { useEffect, useState } from "react";
 
 function Header() {
@@ -66,7 +66,7 @@ function Header() {
 
   return (
     <VuiBox position="relative">
-      <DashboardNavbar light />
+      {/* <DashboardNavbar light /> */}
       <Card
         sx={{
           px: 3,

@@ -40,7 +40,7 @@ import Footer from "examples/Footer";
 
 // Vision UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+// import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import OrderOverview from "layouts/rtl/components/OrderOverview";
 import Projects from "layouts/rtl/components/Projects";
 import ReferralTracking from "layouts/rtl/components/ReferralTracking";
@@ -73,7 +73,7 @@ function RTL() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar />
+      {/* <DashboardNavbar /> */}
       <VuiBox py={3}>
         <VuiBox mb={3}>
           <Grid container spacing={3}>

@@ -19,11 +19,18 @@
 /* eslint-disable react/prop-types */
 // Vision UI Dashboard React components
 import React, { useState, useEffect } from 'react';
+
 import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
+import VuiButton from "components/VuiButton";
 import VuiAvatar from "components/VuiAvatar";
 import VuiBadge from "components/VuiBadge";
 
+import { useHistory, Link } from "react-router-dom";
+
+function goToDashboard(symbol) {
+  history.push("/home");
+}
 
 function Collection({ image, name, description }) {
   return (
@@ -56,7 +63,7 @@ function Function({ job, org }) {
   );
 }
 
-export default function authorsTableData() {
+export default function collectionsTableData() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState([]);
@@ -114,9 +121,20 @@ export default function authorsTableData() {
                 </VuiTypography>
               ),
               action: (
-                <VuiTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-                  Stats
-                </VuiTypography>
+                <VuiBox display={{ xs: "none", lg: "inline-block" }}>
+                  <VuiButton
+                    component={Link}
+                    to={'dashboard'}
+                    variant="gradient"
+                    color={"info"}
+                    size="small"
+                  >
+                    Analysis
+                  </VuiButton>
+              </VuiBox>
+                // <VuiTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+                //   Stats
+                // </VuiTypography>
               ),
             });
           });
@@ -140,7 +158,7 @@ export default function authorsTableData() {
       // { name: "status", align: "center" }, 
       { name: "Listed count", align: "center" },
       { name: "Listed count change (%)", align: "center" },
-      { name: "action", align: "center" },
+      // { name: "action", align: "center" },
     ],
   
     rows: items,
