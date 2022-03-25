@@ -78,7 +78,7 @@ export default function authorsTableData() {
                   {it.metadata.floorPrice / 1e9 }
                 </VuiTypography>
               ),
-              'floor price change': (
+              'floor price change (%)': (
                 <VuiTypography variant="caption" color={(it.metadata.floorPriceChange.charAt(0) === '-' ) ? "error" : "success" } fontWeight="medium">
                   {it.metadata.floorPriceChange }
                 </VuiTypography>
@@ -108,7 +108,7 @@ export default function authorsTableData() {
                   {it.metadata.listedCount}
                 </VuiTypography>
               ),
-              'items Count Change': (
+              'Listed count change (%)': (
                 <VuiTypography variant="caption" color={(it.metadata.listedCountChange.charAt(0) === '-' ) ? "error" : "success" } fontWeight="medium">
                   {it.metadata.listedCountChange }
                 </VuiTypography>
@@ -135,11 +135,11 @@ export default function authorsTableData() {
     columns: [
       { name: "collection", align: "left" },
       { name: "floor price", align: "center" }, 
-      { name: "floor price change", align: "center" }, 
+      { name: "floor price change (%)", align: "center" }, 
       { name: "volume 24h", align: "center" }, 
       // { name: "status", align: "center" }, 
       { name: "Listed count", align: "center" },
-      { name: "items Count Change", align: "center" },
+      { name: "Listed count change (%)", align: "center" },
       { name: "action", align: "center" },
     ],
   

@@ -78,7 +78,7 @@ export default function Dashboard() {
   const { gradients } = colors;
   const { cardContent } = gradients;
   
-  const [symbol, setSymbol] = useState('degenerate_ape_academy');
+  const [symbol, setSymbol] = useState('project_tenjin');
   const [collectionData, setCollectionData] = useState({});
   const [collectionHistoryData, setCollectionHistoryData] = useState([]);
   const [historyFloorData, setHistoryFloorData] = useState([]);
@@ -96,56 +96,89 @@ export default function Dashboard() {
   const [listedTotalValue, setListedTotalValue] = useState(0);  
   const [volume24hr, setVolume24hr] = useState(0); 
   const [volumeAll, setVolumeAll] = useState(0); 
+  const [floorPriceChange, setFloorPriceChange] = useState(' ');
+  const [listedCountChange, setListedCountChange] = useState(' ');
+
+  const [historyInterval, setHistoryInterval] = useState(15);
+
+
+
+  const [collectionProcessedData, setCollectionProcessedData]= useState([]);
 
   // get collection basic data info
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
-      .then(res => res.json())
-      .then(result => {
-        setCollectionData(result);
-      });
-
-    // get timeseries data
-    fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/history/complete`)
-      .then(res => res.json())
-      .then(data => {
-        console.log(data) // TODO remove;
-        const floorHistoryArr = [];
-        const historyListingsArr = [];
-
-        setCollectionHistoryData(data);
-        setIsCollectionReady(true);
-
-        setChange24HourPrice(getChangeForAttr(data,'avgPrice24hr'));
-        setChange24HourVolume(getChangeForAttr(data, 'volume24hr'));
-        setChangeListedCount(getChangeForAttr(data, 'listedCount'));
-        setChangeFloorPrice(getChangeForAttr(data, 'floorPrice'));
-        
-        const recentData = data[0].metadata;
-        setAvgPrice24hr((recentData.avgPrice24hr / 1e9).toFixed(2));
-        setFloorPrice((recentData.floorPrice / 1e9).toFixed(2));
-        setListedCount(Math.round(recentData.listedCount));
-        setListedTotalValue((recentData.listedTotalValue / 1e9).toFixed(2));  
-        setVolume24hr((recentData.volume24hr / 1e9).toFixed(2)); 
-        setVolumeAll((recentData.volumeAll / 1e9).toFixed(2));
-
-        data.slice().reverse()
-          .forEach((it, idx) => {
-
-            floorHistoryArr.push({
-              x: it.timestamp, 
-              y: (it.metadata.floorPrice / 1e9).toFixed(2),
-            });
-
-            historyListingsArr.push({
-              x: it.timestamp, 
-              y: it.metadata.listedCount,
-            });
-          }); 
-
-        setHistoryFloorData([{data: floorHistoryArr}]);
-        setHistoryListingsData([{data: historyListingsArr}]);
-      }); 
+    try {
+      setInterval(async () => {
+        fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
+        .then(res => res.json())
+        .then(result => {
+          setCollectionData(result);
+        });
+  
+      fetch(`${process.env.REACT_APP_API_BASE}/collection/mainPage`)
+        .then(res => res.json())
+        .then(result => {
+          result.forEach((el, idx) => {
+            if (el._id === symbol) {
+              setCollectionProcessedData(el);
+              setFloorPrice((el.metadata.floorPrice / 1e9).toFixed(2));
+              setListedCount(el.metadata.listedCount);
+              setListedTotalValue((el.metadata.listedTotalValue / 1e9).toFixed(2));
+              setAvgPrice24hr((el.metadata.avgPrice24hr / 1e9).toFixed(2));
+              setVolume24hr((el.metadata.volume24hr / 1e9).toFixed(2));
+              setVolumeAll((el.metadata.volumeAll / 1e9).toFixed(2));
+              setFloorPriceChange(el.metadata.floorPriceChange);
+              setListedCountChange(el.metadata.listedCountChange);
+              return;
+            }
+          });
+        });
+  
+      // get timeseries data
+      fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/history/complete?limit=100&dense=${historyInterval}`)
+        .then(res => res.json())
+        .then(data => {
+          const floorHistoryArr = [];
+          const historyListingsArr = [];
+  
+          setCollectionHistoryData(data);
+          setIsCollectionReady(true);
+  
+          // setChange24HourPrice(getChangeForAttr(data,'avgPrice24hr'));
+          // setChange24HourVolume(getChangeForAttr(data, 'volume24hr'));
+          // setChangeListedCount(getChangeForAttr(data, 'listedCount'));
+          // setChangeFloorPrice(getChangeForAttr(data, 'floorPrice'));
+          
+          const recentData = data[0].metadata;
+          // setAvgPrice24hr((recentData.avgPrice24hr / 1e9).toFixed(2));
+          // setFloorPrice((recentData.floorPrice / 1e9).toFixed(2));
+          // setListedCount(Math.round(recentData.listedCount));
+          // setListedTotalValue((recentData.listedTotalValue / 1e9).toFixed(2));  
+          // setVolume24hr((recentData.volume24hr / 1e9).toFixed(2)); 
+          // setVolumeAll((recentData.volumeAll / 1e9).toFixed(2));
+  
+          data.slice().reverse()
+            .forEach((it, idx) => {
+  
+              floorHistoryArr.push({
+                x: it.timestamp, 
+                y: (it.metadata.floorPrice / 1e9).toFixed(2),
+              });
+  
+              historyListingsArr.push({
+                x: it.timestamp, 
+                y: it.metadata.listedCount,
+              });
+            }); 
+  
+          setHistoryFloorData([{data: floorHistoryArr}]);
+          setHistoryListingsData([{data: historyListingsArr}]);
+        }); 
+      }, 5000);
+    } catch(e) {
+      console.log(e);
+    } 
+    
   }, [symbol]);
 
   return (
@@ -158,7 +191,7 @@ export default function Dashboard() {
               <MiniStatisticsCard
                 title={{ text: "24h Avg Price", fontWeight: "regular" }}
                 count={`${avgPrice24hr}`}
-                percentage={{ color: (change24HourPrice < 0) ?  "error" : "success", text: `${change24HourPrice}%` }}
+                percentage={{ color: (change24HourPrice < 0) ?  "error" : "success", text: `` }}
                 icon={{ color: "info", component: <IoWallet size="22px" color="white" /> }}
               />
             </Grid>
@@ -166,7 +199,7 @@ export default function Dashboard() {
               <MiniStatisticsCard
                 title={{ text: "24h Avg volume" }}
                 count={`${volume24hr}`}
-                percentage={{ color: (change24HourVolume < 0) ?  "error" : "success", text: `${change24HourVolume}%` }}
+                percentage={{ color: (change24HourVolume < 0) ?  "error" : "success", text: `` }}
                 icon={{ color: "info", component: <IoGlobe size="22px" color="white" /> }}
               />
             </Grid>
@@ -174,7 +207,7 @@ export default function Dashboard() {
               <MiniStatisticsCard
                 title={{ text: "Listed NFTs" }}
                 count={`${listedCount}`}
-                percentage={{ color: (changeListedCount < 0) ?  "error" : "success", text: `${changeListedCount}%` }} 
+                percentage={{ color: (listedCountChange.charAt(0) === '-') ?  "error" : "success", text: `${listedCountChange}` }} 
                 icon={{ color: "info", component: <IoDocumentText size="22px" color="white" /> }}
               />
             </Grid>
@@ -182,7 +215,7 @@ export default function Dashboard() {
               <MiniStatisticsCard
                 title={{ text: "Floor price" }}
                 count={ `${floorPrice}` } 
-                percentage={{ color: (change24HourVolume < 0) ?  "error" : "success", text: `${changeFloorPrice}%` }}
+                percentage={{ color: (floorPriceChange.charAt(0) === '-') ?  "error" : "success", text: `${floorPriceChange}` }}
                 icon={{ color: "info", component: <FaShoppingCart size="20px" color="white" /> }}
               />
             </Grid>
@@ -210,16 +243,175 @@ export default function Dashboard() {
                     Floor price history
                   </VuiTypography>
                   <VuiBox display="flex" alignItems="center" mb="40px">
-                    <VuiTypography variant="button" color="success" fontWeight="bold">
-                      +5% more{" "}
+                    <VuiTypography variant="button" color={ (floorPriceChange.charAt(0) === '-') ?  "error" : "success"} fontWeight="bold">
+                      {`${floorPriceChange} `}
                       <VuiTypography variant="button" color="text" fontWeight="regular">
-                        in 2021
+                        in last 24 hours
                       </VuiTypography>
                     </VuiTypography>
                   </VuiBox>
                   <VuiBox sx={{ height: "310px" }}>
                     <LineChart
                       lineChartData={historyFloorData}
+                      lineChartOptions={historyFloorPriceOptionsDashboard}
+                    />
+                  </VuiBox>
+                </VuiBox>
+              </Card>
+            </Grid>
+            <Grid item xs={12} lg={6} xl={5}>
+              <Card>
+                <VuiBox>
+                  <VuiBox
+                    mb="24px"
+                    height="220px"
+                    sx={{
+                      background: linearGradient(
+                        cardContent.main,
+                        cardContent.state,
+                        cardContent.deg
+                      ),
+                      borderRadius: "20px",
+                    }}
+                  >
+                    <BarChart
+                      barChartData={barChartDataDashboard}
+                      barChartOptions={barChartOptionsDashboard}
+                    />
+                  </VuiBox>
+                  <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
+                    Active Users
+                  </VuiTypography>
+                  <VuiBox display="flex" alignItems="center" mb="40px">
+                    <VuiTypography variant="button" color="success" fontWeight="bold">
+                      (+23){" "}
+                      <VuiTypography variant="button" color="text" fontWeight="regular">
+                        than last week
+                      </VuiTypography>
+                    </VuiTypography>
+                  </VuiBox>
+                  <Grid container spacing="50px">
+                    <Grid item xs={6} md={3} lg={3}>
+                      <Stack
+                        direction="row"
+                        spacing={{ sm: "10px", xl: "4px", xxl: "10px" }}
+                        mb="6px"
+                      >
+                        <VuiBox
+                          bgColor="info"
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                          sx={{ borderRadius: "6px", width: "25px", height: "25px" }}
+                        >
+                          <IoWallet color="#fff" size="12px" />
+                        </VuiBox>
+                        <VuiTypography color="text" variant="button" fontWeight="medium">
+                          Users
+                        </VuiTypography>
+                      </Stack>
+                      <VuiTypography color="white" variant="lg" fontWeight="bold" mb="8px">
+                        32,984
+                      </VuiTypography>
+                      <VuiProgress value={60} color="info" sx={{ background: "#2D2E5F" }} />
+                    </Grid>
+                    <Grid item xs={6} md={3} lg={3}>
+                      <Stack
+                        direction="row"
+                        spacing={{ sm: "10px", xl: "4px", xxl: "10px" }}
+                        mb="6px"
+                      >
+                        <VuiBox
+                          bgColor="info"
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                          sx={{ borderRadius: "6px", width: "25px", height: "25px" }}
+                        >
+                          <IoIosRocket color="#fff" size="12px" />
+                        </VuiBox>
+                        <VuiTypography color="text" variant="button" fontWeight="medium">
+                          Clicks
+                        </VuiTypography>
+                      </Stack>
+                      <VuiTypography color="white" variant="lg" fontWeight="bold" mb="8px">
+                        2,42M
+                      </VuiTypography>
+                      <VuiProgress value={60} color="info" sx={{ background: "#2D2E5F" }} />
+                    </Grid>
+                    <Grid item xs={6} md={3} lg={3}>
+                      <Stack
+                        direction="row"
+                        spacing={{ sm: "10px", xl: "4px", xxl: "10px" }}
+                        mb="6px"
+                      >
+                        <VuiBox
+                          bgColor="info"
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                          sx={{ borderRadius: "6px", width: "25px", height: "25px" }}
+                        >
+                          <FaShoppingCart color="#fff" size="12px" />
+                        </VuiBox>
+                        <VuiTypography color="text" variant="button" fontWeight="medium">
+                          Sales
+                        </VuiTypography>
+                      </Stack>
+                      <VuiTypography color="white" variant="lg" fontWeight="bold" mb="8px">
+                        2,400$
+                      </VuiTypography>
+                      <VuiProgress value={60} color="info" sx={{ background: "#2D2E5F" }} />
+                    </Grid>
+                    <Grid item xs={6} md={3} lg={3}>
+                      <Stack
+                        direction="row"
+                        spacing={{ sm: "10px", xl: "4px", xxl: "10px" }}
+                        mb="6px"
+                      >
+                        <VuiBox
+                          bgColor="info"
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                          sx={{ borderRadius: "6px", width: "25px", height: "25px" }}
+                        >
+                          <IoBuild color="#fff" size="12px" />
+                        </VuiBox>
+                        <VuiTypography color="text" variant="button" fontWeight="medium">
+                          Items
+                        </VuiTypography>
+                      </Stack>
+                      <VuiTypography color="white" variant="lg" fontWeight="bold" mb="8px">
+                        320
+                      </VuiTypography>
+                      <VuiProgress value={60} color="info" sx={{ background: "#2D2E5F" }} />
+                    </Grid>
+                  </Grid>
+                </VuiBox>
+              </Card>
+            </Grid>
+          </Grid>
+        </VuiBox>
+        <VuiBox mb={3}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} lg={6} xl={7}>
+              <Card>
+                <VuiBox sx={{ height: "100%" }}>
+                  <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
+                    Listed history
+                  </VuiTypography>
+                  <VuiBox display="flex" alignItems="center" mb="40px">
+                  <VuiTypography variant="button" color={ (listedCountChange.charAt(0) === '-') ?  "error" : "success"} fontWeight="bold">
+                      {`${listedCountChange} `}
+                      <VuiTypography variant="button" color="text" fontWeight="regular">
+                        in last 24 hours
+                      </VuiTypography>
+                    </VuiTypography>
+                  </VuiBox>
+                  <VuiBox sx={{ height: "310px" }}>
+                    <LineChart
+                      lineChartData={historyListingsData}
                       lineChartOptions={historyFloorPriceOptionsDashboard}
                     />
                   </VuiBox>
