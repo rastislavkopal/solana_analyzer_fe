@@ -68,7 +68,7 @@ import team2 from "assets/images/team-2.jpg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 
 
-export default function DashboardNavbar({ absolute, light, isMini, setSymbol, symbol, collections }) {
+export default function DashboardNavbar({ absolute, light, isMini, setSymbol, symbol, collections, historyInterval, setHistoryInterval }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useVisionUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator } = controller;
@@ -77,8 +77,23 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
 
   const [selectedSymbol, setSelectedSymbol] = useState(symbol);
   const [selectedSymbolName, setSelectedSymbolName] = useState(symbol);
-  const [open, setOpen] = useState(false);
+  const [openSymbol, setOpenSymbol] = useState(false);
+  const [openInterval, setOpenInterval] = useState(false);
   const [selectMenu, setSelectMenu] = useState([]);
+
+  const [localInterval, setLocalInterval] = useState(1);
+
+  const intervalsMenu = {
+    1: <MenuItem value="1">{"1m"}</MenuItem>,
+    5: <MenuItem value="5">{"5m"}</MenuItem>,
+    15: <MenuItem value="15">{"15m"}</MenuItem>,
+    60: <MenuItem value="60">{"1h"}</MenuItem>
+  }
+
+  const handleIntervalChange = (event) => {
+    setLocalInterval(event.target.value)
+    setHistoryInterval(event.target.value)
+  }
 
   const handleSymbolChange = (event) => {
     setSymbol(event.target.value);
@@ -86,13 +101,7 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
     setSelectedSymbolName(event.target.label)
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
 
   useEffect(() => {
     if (collections && collections.length > 0) {
@@ -197,15 +206,31 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
         {isMini ? null : (
           <VuiBox sx={(theme) => navbarRow(theme, { isMini })}>
             <VuiBox pr={1}>
-                <Button sx={{ display: 'block' }} onClick={handleOpen}></Button>
+                <FormControl sx={{ minWidth: 60 }}>
+                  <Select
+                    labelId="demo-controlled-open-select-label"
+                    id="demo-controlled-open-select"
+                    open={openInterval}
+                    onClose={ () => setOpenInterval(false) }
+                    onOpen={ () => setOpenInterval(true) }
+                    value={ intervalsMenu[localInterval].props.value }
+                    label={ intervalsMenu[localInterval].props.children }
+                    defaultValue={""} 
+                    onChange={handleIntervalChange}
+                  >
+                      {Object.values(intervalsMenu)}
+                  </Select>
+                </FormControl>
+            </VuiBox>
+            <VuiBox pr={1}>
                 <FormControl sx={{ m: 1, minWidth: 120 }}>
                   {/* <InputLabel id="demo-controlled-open-select-label">Symbol</InputLabel> */}
                   <Select
                     labelId="demo-controlled-open-select-label"
                     id="demo-controlled-open-select"
-                    open={open}
-                    onClose={handleClose}
-                    onOpen={handleOpen}
+                    open={openSymbol}
+                    onClose={() => setOpenSymbol(false)}
+                    onOpen={() => setOpenSymbol(true)}
                     value={selectedSymbol}
                     label={selectedSymbolName}
                     defaultValue="" 
@@ -290,6 +315,7 @@ DashboardNavbar.defaultProps = {
   absolute: false,
   light: false,
   isMini: false,
+  historyInterval: 1,
 };
 
 // Typechecking props for the DashboardNavbar

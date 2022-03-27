@@ -79,7 +79,7 @@ export default function Dashboard() {
   const { gradients } = colors;
   const { cardContent } = gradients;
   
-  const [symbol, setSymbol] = useState('project_tenjin');
+  const [symbol, setSymbol] = useState('888_anon_club');
 
   const [collections, setCollections] = useState([]);
   const [collectionData, setCollectionData] = useState({});
@@ -102,7 +102,7 @@ export default function Dashboard() {
   const [floorPriceChange, setFloorPriceChange] = useState(' ');
   const [listedCountChange, setListedCountChange] = useState(' ');
 
-  const [historyInterval, setHistoryInterval] = useState(15);
+  const [historyInterval, setHistoryInterval] = useState(3);
 
 
   const [collectionProcessedData, setCollectionProcessedData]= useState([]);
@@ -188,11 +188,11 @@ export default function Dashboard() {
       console.log(e);
     } 
     
-  }, [symbol]);
+  }, [symbol, historyInterval]);
 
   return (
     <DashboardLayout>
-      <DashboardNavbar setSymbol={setSymbol} symbol={symbol} collections={collections} />
+      <DashboardNavbar setSymbol={setSymbol} symbol={symbol} collections={collections} historyInterval={historyInterval} setHistoryInterval={setHistoryInterval}  />
       <VuiBox py={3}>
         <VuiBox mb={3}>
           <Grid container spacing={3}>

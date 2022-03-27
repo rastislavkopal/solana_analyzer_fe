@@ -229,7 +229,7 @@ function Sidenav({ color, brandName, routes, ...rest }) {
         <VuiBox mt={2}>
           <VuiButton
             component="a"
-            href="https://creative-tim.com/product/vision-ui-dashboard-pro-react"
+            href="support@solysis.io"
             target="_blank"
             rel="noreferrer"
             variant="gradient"
