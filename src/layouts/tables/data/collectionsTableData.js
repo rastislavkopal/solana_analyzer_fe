@@ -151,13 +151,13 @@ export default function collectionsTableData() {
 
   return {
     columns: [
-      { name: "collection", align: "left" },
-      { name: "floor price", align: "center" }, 
-      { name: "floor price change (%)", align: "center" }, 
-      { name: "volume 24h", align: "center" }, 
+      { name: "collection", align: "left", numeric: false },
+      { name: "floor price", align: "center", numeric: true }, 
+      { name: "floor price change (%)", align: "center", numeric: true }, 
+      { name: "volume 24h", align: "center", numeric: true }, 
       // { name: "status", align: "center" }, 
-      { name: "Listed count", align: "center" },
-      { name: "Listed count change (%)", align: "center" },
+      { name: "Listed count", align: "center", numeric: true },
+      { name: "Listed count change (%)", align: "center", numeric: true },
       // { name: "action", align: "center" },
     ],
   

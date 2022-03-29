@@ -41,7 +41,7 @@
 // Vision UI Dashboard React layouts
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
-// import Billing from "layouts/billing";
+import Billing from "layouts/billing";
 // import RTL from "layouts/rtl";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
@@ -55,6 +55,7 @@ import { IoBuild } from "react-icons/io5";
 import { BsCreditCardFill } from "react-icons/bs";
 import { IoStatsChart } from "react-icons/io5";
 import { IoListCircle } from "react-icons/io5";
+import { IoAppsSharp } from "react-icons/io5";
 import { IoHome } from "react-icons/io5";
 
 const routes = [
@@ -76,15 +77,15 @@ const routes = [
     component: Dashboard,
     noCollapse: true,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Billing",
-  //   key: "billing",
-  //   route: "/billing",
-  //   icon: <BsCreditCardFill size="15px" color="inherit" />,
-  //   component: Billing,
-  //   noCollapse: true,
-  // },
+  {
+    type: "collapse",
+    name: "Items",
+    key: "items",
+    route: "/items",
+    icon: <IoAppsSharp size="15px" color="inherit" />,
+    component: Billing,
+    noCollapse: true,
+  },
   // {
   //   type: "collapse",
   //   name: "RTL",

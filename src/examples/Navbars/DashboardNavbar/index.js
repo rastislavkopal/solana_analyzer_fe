@@ -84,10 +84,10 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
   const [localInterval, setLocalInterval] = useState(1);
 
   const intervalsMenu = {
-    1: <MenuItem value="1">{"1m"}</MenuItem>,
-    5: <MenuItem value="5">{"5m"}</MenuItem>,
-    15: <MenuItem value="15">{"15m"}</MenuItem>,
-    60: <MenuItem value="60">{"1h"}</MenuItem>
+    1: <MenuItem value="1">{"1h"}</MenuItem>,
+    5: <MenuItem value="5">{"8h"}</MenuItem>,
+    15: <MenuItem value="15">{"24h"}</MenuItem>,
+    60: <MenuItem value="60">{"96h"}</MenuItem>
   }
 
   const handleIntervalChange = (event) => {
