@@ -69,14 +69,6 @@ import { barChartDataDashboard } from "layouts/dashboard/data/barChartData";
 import { barChartOptionsDashboard } from "layouts/dashboard/data/barChartOptions";
 
 
-function getChangeForAttr(data, attr){
-  const a = data[data.length - 1].metadata[attr];
-  const b = data[0].metadata[attr];
-
-  const diff = 100 * Math.abs( ( a - b ) / ( (a+b)/2 ) )
-  return  diff.toFixed(2);
-}
-
 export default function Dashboard() {
   const { gradients } = colors;
   const { cardContent } = gradients;
@@ -105,6 +97,8 @@ export default function Dashboard() {
   const [listedCountChange, setListedCountChange] = useState(' ');
 
   const [historyInterval, setHistoryInterval] = useState(3);
+
+  const [priceRankData, setPriceRankData] = useState([]);
 
 
   const [collectionProcessedData, setCollectionProcessedData]= useState([]);
@@ -144,6 +138,30 @@ export default function Dashboard() {
             }
           });
         });
+
+    fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/item/all`)
+    .then(res => res.json())
+    .then(
+      (result) => {
+        let its = [];
+
+        result.forEach((it, idx) => {
+          its.push({
+            y: it.price, 
+            x: it.rank,
+            name: it.name,
+            mintAddress: it.mintAddress,
+            image: collectionData.image,
+          });
+        });
+
+        setPriceRankData([{
+          name: "Items - price distribution",
+          data: its,
+        }]);
+      },
+      (error) => console.error(error)
+    )
   
       // get timeseries data
       fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/history/complete?limit=100&dense=${historyInterval}`)
@@ -154,19 +172,8 @@ export default function Dashboard() {
   
           setCollectionHistoryData(data);
           setIsCollectionReady(true);
-  
-          // setChange24HourPrice(getChangeForAttr(data,'avgPrice24hr'));
-          // setChange24HourVolume(getChangeForAttr(data, 'volume24hr'));
-          // setChangeListedCount(getChangeForAttr(data, 'listedCount'));
-          // setChangeFloorPrice(getChangeForAttr(data, 'floorPrice'));
-          
+
           const recentData = data[0].metadata;
-          // setAvgPrice24hr((recentData.avgPrice24hr / 1e9).toFixed(2));
-          // setFloorPrice((recentData.floorPrice / 1e9).toFixed(2));
-          // setListedCount(Math.round(recentData.listedCount));
-          // setListedTotalValue((recentData.listedTotalValue / 1e9).toFixed(2));  
-          // setVolume24hr((recentData.volume24hr / 1e9).toFixed(2)); 
-          // setVolumeAll((recentData.volumeAll / 1e9).toFixed(2));
   
           data.slice().reverse()
             .forEach((it, idx) => {
@@ -313,9 +320,9 @@ export default function Dashboard() {
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                     Items price distribution
                   </VuiTypography>
-                  <VuiBox sx={{ height: "310px" }}>
+                  <VuiBox sx={{ height: "400px" }}>
                   <ItemPriceDistribution
-                      symbol={symbol}
+                      chartData={priceRankData}
                     />
                   </VuiBox>
                 </VuiBox>

@@ -57,7 +57,7 @@ function Footer() {
           <VuiBox mr={{ xs: "20px", lg: "46px" }}>
             <VuiTypography
               component="a"
-              href="https://www.creative-tim.com/templates"
+              href="https://magiceden.io/"
               variant="body2"
               color="white"
             >
@@ -67,21 +67,21 @@ function Footer() {
           <VuiBox mr={{ xs: "20px", lg: "46px" }}>
             <VuiTypography
               component="a"
-              href="https://www.creative-tim.com/blog/"
+              href="https://twitter.com/solysis_io"
               variant="body2"
               color="white"
             >
-              Blog
+              Twitter
             </VuiTypography>
           </VuiBox>
           <VuiBox>
             <VuiTypography
               component="a"
-              href="https://www.creative-tim.com/license"
+              href="#contact"
               variant="body2"
               color="white"
             >
-              License
+              Contact
             </VuiTypography>
           </VuiBox>
         </VuiBox>

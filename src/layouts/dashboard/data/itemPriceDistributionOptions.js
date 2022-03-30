@@ -20,10 +20,10 @@ export const ItemPriceDistributionOptions = {
           custom: ({series, seriesIndex, dataPointIndex, w})=>{
             let data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
           
-            // <img src="https://hamqav2usp2ytwib6wshl5h2oznuqbhy4kkb3sjqodvdxp3y.arweave.net/${data.mintAddress}" />
             return `<ul>
+                <li><img src="${data.image}" width="auto" height="140"/></li>
                 <li>${data.name}</li>
-                <li></li>
+                <li>price: ${data.y.toFixed(2)}</li>
             </ul>`;
           },
         },

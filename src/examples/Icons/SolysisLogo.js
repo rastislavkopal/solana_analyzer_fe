@@ -21,7 +21,7 @@ import PropTypes from "prop-types";
 
 import solysisLogo from "assets/images/solysis-logos/logo.png";
 
-function SolysisLogo({ size }) {
+function SolysisLogo({ size, color }) {
   return (
     // <svg
     //   width={size}
