@@ -42,6 +42,7 @@
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
+import Items from "layouts/items"
 // import RTL from "layouts/rtl";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
@@ -83,7 +84,7 @@ const routes = [
     key: "items",
     route: "/items",
     icon: <IoAppsSharp size="15px" color="inherit" />,
-    component: Billing,
+    component: Items,
     noCollapse: true,
   },
   // {
