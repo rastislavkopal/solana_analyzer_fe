@@ -57,6 +57,7 @@ function Footer() {
           <VuiBox mr={{ xs: "20px", lg: "46px" }}>
             <VuiTypography
               component="a"
+              target="_blank"
               href="https://magiceden.io/"
               variant="body2"
               color="white"

@@ -1,21 +1,3 @@
-/*!
-
-=========================================================
-* Vision UI Free React - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/vision-ui-free-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-react/blob/master LICENSE.md)
-
-* Design and Coded by Simmmple & Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
 // @mui material components
 import Card from "@mui/material/Card";
 
@@ -25,7 +7,8 @@ import VuiTypography from "components/VuiTypography";
 
 // Vision UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-// import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import CollectionsNavbar from "examples/Navbars/CollectionsNavbar";
+
 import Footer from "examples/Footer";
 import Table from "examples/Tables/sortableTable/collectionsTable";
 
@@ -39,7 +22,7 @@ function Tables() {
 
   return (
     <DashboardLayout>
-      {/* <DashboardNavbar /> */}
+      <CollectionsNavbar />
       <VuiBox py={3}>
         <VuiBox mb={3}>
           <Card>

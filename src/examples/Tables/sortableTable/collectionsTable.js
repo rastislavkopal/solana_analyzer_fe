@@ -65,6 +65,7 @@ export default function Table({ columns, rows }) {
   const [selectedOrderBy, setSelectedOrderBy] = useState("collection");
   const [selectedOrder, setSelectedOrder] = useState('asc');
 
+  const [tableRows, setTableRows] = useState([]);
 
   useEffect(()=>{
   }, [selectedOrder, selectedOrderBy]);
@@ -110,6 +111,7 @@ export default function Table({ columns, rows }) {
 
     // const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
     const createSortHandler = (property) => (event) => {
+      console.log(property);
       handleRequestSort(event, property);
     };
 
@@ -165,7 +167,7 @@ export default function Table({ columns, rows }) {
   });
 
   const renderRows = rows.sort((a,b) => {
-    console.log(a.collection.props.name)
+    // console.log(a.collection.props.name)
     return  a.collection.props.name.localeCompare(b.collection.props.name, 'en', { sensitivity: 'base' });
   }).map((row, key) => {
     const rowKey = `row-${key}`;
@@ -231,7 +233,7 @@ export default function Table({ columns, rows }) {
               <TableRow>{renderColumns}</TableRow>
           </VuiBox>
           <TableBody>{renderRows}</TableBody>
-        </MuiTable>
+        </MuiTable> 
       </TableContainer>
     ),
     [columns, rows]

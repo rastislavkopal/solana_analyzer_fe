@@ -48,6 +48,25 @@ import routes from "routes";
 // Vision UI Dashboard React contexts
 import { useVisionUIController, setMiniSidenav, setOpenConfigurator } from "context";
 
+import { useRecoilValue } from 'recoil';
+
+import { authAtom } from '_state/auth';
+
+function PrivateRoute({ component: Component, ...rest }) {
+  const auth = useRecoilValue(authAtom);
+  return (
+      <Route {...rest} render={props => {
+          if (!auth) {
+              // not logged in so redirect to login page with the return url
+              return <Redirect to={{ pathname: '/authentication/sign-in', state: { from: props.location } }} />
+          }
+
+          // authorized so return component
+          return <Component {...props} />
+      }} />
+  );
+}
+
 export default function App() {
   const [controller, dispatch] = useVisionUIController();
   const { miniSidenav, direction, layout, openConfigurator, sidenavColor } = controller;
@@ -102,7 +121,10 @@ export default function App() {
       }
 
       if (route.route) {
-        return <Route exact path={route.route} component={route.component} key={route.key} />;
+        if (route.route === '/authentication/sign-in')
+          return <Route exact path={route.route} component={route.component} key={route.key} />;
+        
+        return <PrivateRoute exact path={route.route} component={route.component} key={route.key} />;
       }
 
       return null;
@@ -110,7 +132,7 @@ export default function App() {
 
   const configsButton = (
     <VuiBox
-      display="flex"
+      display="none"
       justifyContent="center"
       alignItems="center"
       width="3.5rem"

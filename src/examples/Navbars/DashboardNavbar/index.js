@@ -1,21 +1,3 @@
-/*!
-
-=========================================================
-* Vision UI Free React - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/vision-ui-free-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-react/blob/master LICENSE.md)
-
-* Design and Coded by Simmmple & Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
 import { useState, useEffect } from "react";
 
 // react-router components
@@ -41,10 +23,13 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
+import { IoLogOut, IoLogOutOutline }  from "react-icons/io5";
 
 // Vision UI Dashboard React example components
 import Breadcrumbs from "examples/Breadcrumbs";
 import NotificationItem from "examples/Items/NotificationItem";
+
+import { useUserActions } from '_actions/user.actions';
 
 // Custom styles for DashboardNavbar
 import {
@@ -69,6 +54,9 @@ import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 
 
 export default function DashboardNavbar({ absolute, light, isMini, setSymbol, symbol, collections, historyInterval, setHistoryInterval }) {
+  
+  const userActions = useUserActions();
+  
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useVisionUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator } = controller;
@@ -146,6 +134,7 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
+  const handleLogout = () => userActions.logout();
 
   // Render the notifications menu
   const renderMenu = () => (
@@ -256,7 +245,7 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
               />
             </VuiBox> */}
             <VuiBox color={light ? "white" : "inherit"}>
-              <Link to="/authentication/sign-in">
+              {/* <Link to="/authentication/sign-in">
                 <IconButton sx={navbarIconButton} size="small">
                   <Icon
                     sx={({ palette: { dark, white } }) => ({
@@ -273,7 +262,7 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
                     Sign in
                   </VuiTypography>
                 </IconButton>
-              </Link>
+              </Link> */}
               <IconButton
                 size="small"
                 color="inherit"
@@ -282,14 +271,14 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
               >
                 <Icon className={"text-white"}>{miniSidenav ? "menu_open" : "menu"}</Icon>
               </IconButton>
-              <IconButton
+              {/* <IconButton
                 size="small"
                 color="inherit"
                 sx={navbarIconButton}
-                onClick={handleConfiguratorOpen}
+                onClick={handleLogout}
               >
                 <Icon>settings</Icon>
-              </IconButton>
+              </IconButton> */}
               <IconButton
                 size="small"
                 color="inherit"
@@ -297,9 +286,9 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
                 aria-controls="notification-menu"
                 aria-haspopup="true"
                 variant="contained"
-                onClick={handleOpenMenu}
+                onClick={handleLogout}
               >
-                <Icon className={light ? "text-white" : "text-dark"}>notifications</Icon>
+                <IoLogOutOutline size="28px" color="inherit"/>
               </IconButton>
               {renderMenu()}
             </VuiBox>

@@ -124,7 +124,7 @@ export default function Dashboard() {
         .then(res => res.json())
         .then(result => {
           result.forEach((el, idx) => {
-            if (el._id === symbol) {
+            if (el.metadata.symbol === symbol) {
               setCollectionProcessedData(el);
               setFloorPrice((el.metadata.floorPrice / 1e9).toFixed(2));
               setListedCount(el.metadata.listedCount);

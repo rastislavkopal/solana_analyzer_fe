@@ -18,11 +18,6 @@ import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
 import VuiInput from "components/VuiInput";
 
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import Button from '@mui/material/Button';
 import { IoLogOut, IoLogOutOutline }  from "react-icons/io5";
 
 // Vision UI Dashboard React example components
@@ -40,7 +35,6 @@ import {
   navbarMobileMenu,
 } from "examples/Navbars/DashboardNavbar/styles";
 
-// Vision UI Dashboard React context
 import {
   useVisionUIController,
   setTransparentNavbar,
@@ -48,13 +42,10 @@ import {
   setOpenConfigurator,
 } from "context";
 
-// Images
-import team2 from "assets/images/team-2.jpg";
-import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 
 
-export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol, collections }) {
-
+export default function CollectionsNavbar({ absolute, light, isMini }) {
+  
   const userActions = useUserActions();
   
   const [navbarType, setNavbarType] = useState();
@@ -62,29 +53,6 @@ export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
-
-  const [selectedSymbol, setSelectedSymbol] = useState(symbol);
-  const [selectedSymbolName, setSelectedSymbolName] = useState(symbol);
-  const [openSymbol, setOpenSymbol] = useState(false);
-  const [selectMenu, setSelectMenu] = useState([]);
-
-  const handleSymbolChange = (event) => {
-    setSymbol(event.target.value);
-    setSelectedSymbol(event.target.value)
-    setSelectedSymbolName(event.target.label)
-  };
-
-
-  useEffect(() => {
-    if (collections && collections.length > 0) {
-      const menu = collections.map((el, idx) => <MenuItem value={el.symbol}>{el.name}</MenuItem>);
-
-      // setSelectedSymbol(menu[0].props.value)
-      // setSelectedSymbolName(menu[0].props.value)
-      // setSymbol(menu[0].props.value)
-      setSelectMenu(menu);
-    }
-  }, [collections])
 
   useEffect(() => {
    
@@ -120,45 +88,6 @@ export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol
   const handleCloseMenu = () => setOpenMenu(false);
   const handleLogout = () => userActions.logout();
 
-  // Render the notifications menu
-  const renderMenu = () => (
-    <Menu
-      anchorEl={openMenu}
-      anchorReference={null}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "left",
-      }}
-      open={Boolean(openMenu)}
-      onClose={handleCloseMenu}
-      sx={{ mt: 2 }}
-    >
-      <NotificationItem
-        image={<img src={team2} alt="person" />}
-        title={["New message", "from Laur"]}
-        date="13 minutes ago"
-        onClick={handleCloseMenu}
-      />
-      <NotificationItem
-        image={<img src={logoSpotify} alt="person" />}
-        title={["New album", "by Travis Scott"]}
-        date="1 day"
-        onClick={handleCloseMenu}
-      />
-      <NotificationItem
-        color="text"
-        image={
-          <Icon fontSize="small" sx={{ color: ({ palette: { white } }) => white.main }}>
-            payment
-          </Icon>
-        }
-        title={["", "Payment successfully completed"]}
-        date="2 days"
-        onClick={handleCloseMenu}
-      />
-    </Menu>
-  );
-
   return (
     <AppBar
       position={absolute ? "absolute" : navbarType}
@@ -171,35 +100,35 @@ export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol
         </VuiBox>
         {isMini ? null : (
           <VuiBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <VuiBox pr={1}>
-                <FormControl sx={{ m: 1, minWidth: 120 }}>
-                  {/* <InputLabel id="demo-controlled-open-select-label">Symbol</InputLabel> */}
-                  <Select
-                    labelId="demo-controlled-open-select-label"
-                    id="demo-controlled-open-select"
-                    open={openSymbol}
-                    onClose={() => setOpenSymbol(false)}
-                    onOpen={() => setOpenSymbol(true)}
-                    value={selectedSymbol}
-                    label={selectedSymbolName}
-                    defaultValue="" 
-                    onChange={handleSymbolChange}
-                  >
-                    {selectMenu}
-                  </Select>
-                </FormControl>
+            <VuiBox color={light ? "white" : "inherit"}>
+              <IconButton
+                size="small"
+                color="inherit"
+                sx={navbarMobileMenu}
+                onClick={handleMiniSidenav}
+              >
+                <Icon className={"text-white"}>{miniSidenav ? "menu_open" : "menu"}</Icon>
+              </IconButton>
+              {/* <IconButton
+                size="small"
+                color="inherit"
+                sx={navbarIconButton}
+                onClick={handleLogout}
+              >
+                <Icon>settings</Icon>
+              </IconButton> */}
+              <IconButton
+                size="small"
+                color="inherit"
+                sx={navbarIconButton}
+                aria-controls="notification-menu"
+                aria-haspopup="true"
+                variant="contained"
+                onClick={handleLogout}
+              >
+                <IoLogOutOutline size="28px" color="inherit"/>
+              </IconButton>
             </VuiBox>
-            <IconButton
-              size="small"
-              color="inherit"
-              sx={navbarIconButton}
-              aria-controls="notification-menu"
-              aria-haspopup="true"
-              variant="contained"
-              onClick={handleLogout}
-            >
-              <IoLogOutOutline size="28px" color="inherit"/>
-            </IconButton>
           </VuiBox>
         )}
       </Toolbar>
@@ -207,14 +136,15 @@ export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol
   );
 }
 
-
-ItemsNavbar.defaultProps = {
+// Setting default values for the props of DashboardNavbar
+CollectionsNavbar.defaultProps = {
   absolute: false,
   light: false,
   isMini: false,
 };
 
-ItemsNavbar.propTypes = {
+// Typechecking props for the DashboardNavbar
+CollectionsNavbar.propTypes = {
   absolute: PropTypes.bool,
   light: PropTypes.bool,
   isMini: PropTypes.bool,
