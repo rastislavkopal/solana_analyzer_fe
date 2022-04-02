@@ -26,6 +26,8 @@ import VuiButton from "components/VuiButton";
 import VuiAvatar from "components/VuiAvatar";
 import VuiBadge from "components/VuiBadge";
 
+import { useFetchWrapper } from "_helpers/fetch_wrapper";
+
 
 function Collection({ image, name, description }) {
   return (
@@ -46,6 +48,8 @@ function Collection({ image, name, description }) {
 }
 
 export default function collectionsTableData({symbol}) {
+  const fetchWrapper = useFetchWrapper();
+  
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState([]);

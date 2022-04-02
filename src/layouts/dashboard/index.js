@@ -68,8 +68,13 @@ import { lineChartOptionsDashboard } from "layouts/dashboard/data/lineChartOptio
 import { barChartDataDashboard } from "layouts/dashboard/data/barChartData";
 import { barChartOptionsDashboard } from "layouts/dashboard/data/barChartOptions";
 
+import { useFetchWrapper } from "_helpers/fetch_wrapper";
+
 
 export default function Dashboard() {
+
+  const fetchWrapper = useFetchWrapper();
+
   const { gradients } = colors;
   const { cardContent } = gradients;
   
@@ -107,21 +112,18 @@ export default function Dashboard() {
   useEffect(() => {
     try {
       // setInterval(async () => {
-        fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
-        .then(res => res.json())
+        fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
         .then(result => {
           setCollectionData(result);
 
         });
 
-      fetch(`${process.env.REACT_APP_API_BASE}/collection`)
-        .then(res => res.json())
+      fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection`)
         .then(result => {
           setCollections(result);
         });
   
-      fetch(`${process.env.REACT_APP_API_BASE}/collection/mainPage`)
-        .then(res => res.json())
+      fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/mainPage`)
         .then(result => {
           result.forEach((el, idx) => {
             if (el.metadata.symbol === symbol) {
@@ -139,8 +141,7 @@ export default function Dashboard() {
           });
         });
 
-    fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/item/all`)
-    .then(res => res.json())
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/item/all`)
     .then(
       (result) => {
         let its = [];
@@ -163,36 +164,34 @@ export default function Dashboard() {
       (error) => console.error(error)
     )
   
-      // get timeseries data
-      fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/history/complete?limit=100&dense=${historyInterval}`)
-        .then(res => res.json())
-        .then(data => {
-          const floorHistoryArr = [];
-          const historyListingsArr = [];
-  
-          setCollectionHistoryData(data);
-          setIsCollectionReady(true);
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/history/complete?limit=100&dense=${historyInterval}`)
+      .then(data => {
+        const floorHistoryArr = [];
+        const historyListingsArr = [];
 
-          const recentData = data[0].metadata;
-  
-          data.slice().reverse()
-            .forEach((it, idx) => {
-  
-              floorHistoryArr.push({
-                x: it.timestamp, 
-                y: (it.metadata.floorPrice / 1e9).toFixed(2),
-              });
-  
-              historyListingsArr.push({
-                x: it.timestamp, 
-                y: it.metadata.listedCount,
-              });
-            }); 
-  
-          setHistoryFloorData([{data: floorHistoryArr}]);
-          setHistoryListingsData([{data: historyListingsArr}]);
-        }); 
-      // }, 5000);
+        setCollectionHistoryData(data);
+        setIsCollectionReady(true);
+
+        const recentData = data[0].metadata;
+
+        data.slice().reverse()
+          .forEach((it, idx) => {
+
+            floorHistoryArr.push({
+              x: it.timestamp, 
+              y: (it.metadata.floorPrice / 1e9).toFixed(2),
+            });
+
+            historyListingsArr.push({
+              x: it.timestamp, 
+              y: it.metadata.listedCount,
+            });
+          }); 
+
+        setHistoryFloorData([{data: floorHistoryArr}]);
+        setHistoryListingsData([{data: historyListingsArr}]);
+      }); 
+    // }, 5000);
     } catch(e) {
       console.error(e);
     } 

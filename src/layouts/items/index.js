@@ -37,21 +37,14 @@ import Footer from "examples/Footer";
 import typography from "assets/theme/base/typography";
 import colors from "assets/theme/base/colors";
 
-import TransactionsOverview from "layouts/dashboard/components/TransactionsOverview";
-
-// React icons
-import { IoIosRocket } from "react-icons/io";
-import { IoConstructOutline, IoGlobe } from "react-icons/io5";
-import { IoBuild } from "react-icons/io5";
-import { IoWallet } from "react-icons/io5";
-import { VscRocket } from "react-icons/vsc"
-import { IoDocumentText } from "react-icons/io5";
-import { FaShoppingCart } from "react-icons/fa";
+import { useFetchWrapper } from "_helpers/fetch_wrapper";
 
 import Item from "layouts/items/components/Item"
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 export default function Items() {
+
+  const fetchWrapper = useFetchWrapper();
   
   const [symbol, setSymbol] = useState('stoned_ape_crew');
   const [collections, setCollections] = useState([]);
@@ -80,14 +73,12 @@ export default function Items() {
         .then((res) => res.json())
         .then((result) => setItems(result.results))
 
-    fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
-        .then(res => res.json())
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
         .then(result => {
           setCollectionData(result);
         });
     
-    fetch(`${process.env.REACT_APP_API_BASE}/collection`)
-        .then(res => res.json())
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection`)
         .then(result => {
           setCollections(result);
         });

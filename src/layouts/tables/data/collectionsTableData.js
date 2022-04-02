@@ -26,6 +26,8 @@ import VuiButton from "components/VuiButton";
 import VuiAvatar from "components/VuiAvatar";
 import VuiBadge from "components/VuiBadge";
 
+import { useFetchWrapper } from "_helpers/fetch_wrapper";
+
 import { useHistory, Link } from "react-router-dom";
 
 function goToDashboard(symbol) {
@@ -64,15 +66,16 @@ function Function({ job, org }) {
 }
 
 export default function collectionsTableData() {
+  
+  const fetchWrapper = useFetchWrapper();
+
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_BASE}/collection/mainPage`)
-      .then(res => res.json())
-      .then(
-        (result) => {
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/mainPage`)
+      .then((result) => {
           let its = [];
           result.forEach((it, idx) => {
             its.push( {
