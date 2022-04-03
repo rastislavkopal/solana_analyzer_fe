@@ -87,7 +87,7 @@ function SignIn() {
       title="Welcome back!"
       color="white"
       description="Enter your email and password to sign in"
-      premotto="Ultimate NFT trader tools"
+      premotto="Ultimate NFT trading tools"
       motto="SOLYSIS.IO"
       // image={bgSignIn}
     >

@@ -1,17 +1,17 @@
 {
-  "name": "vision-ui-dashboard-react",
+  "name": "solysis-io",
   "version": "3.0.0",
   "private": true,
-  "author": "Creative Tim",
-  "license": "See license in https://www.creative-tim.com/license",
-  "description": "Material UI version of Vision UI Dashboard by Creative Tim",
-  "homepage": "https://demos.creative-tim.com/vision-ui-dashboard-react/#/dashboard",
+  "author": "team solysis.io",
+  "license": "www.solysis.io",
+  "description": "Solysis io frontend | ultimate trading tools",
+  "homepage": "http://165.227.158.85:3000/dashboard",
   "bugs": {
-    "url": "https://github.com/creativetimofficial/vision-ui-dashboard-react/issues"
+    "url": "https://github.com/rastislavkopal/solysis_fe/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/creativetimofficial/vision-ui-dashboard-react.git"
+    "url": "git+https://github.com/rastislavkopal/solysis_fe"
   },
   "dependencies": {
     "@delowar/react-circle-progressbar": "^1.0.0",
