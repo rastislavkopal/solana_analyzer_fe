@@ -60,7 +60,10 @@ function SignIn() {
 
   useEffect(() => {
     // redirect to home if already logged in
-    if (auth) history.push('/');
+    if (auth) {
+      history.push('/dashboard');
+      window.location.reload(false);
+    }
   }, []);
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);

@@ -122,7 +122,7 @@ export default function App() {
 
       if (route.route) {
         if (route.route === '/authentication/sign-in')
-          return <Route exact path={route.route} component={route.component} key={route.key} />;
+          return <Route exact path={route.route} component={route.component} key={route.key}/>;
         
         return <PrivateRoute exact path={route.route} component={route.component} key={route.key} />;
       }
