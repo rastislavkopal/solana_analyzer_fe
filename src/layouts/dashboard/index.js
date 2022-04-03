@@ -61,6 +61,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import LineChart from "examples/Charts/LineCharts/LineChart";
 import BarChart from "examples/Charts/BarCharts/BarChart";
 import ItemPriceDistribution from "examples/Charts/ScatterCharts/ItemPriceDistribution";
+import ItemListedForDistribution from "examples/Charts/ScatterCharts/ItemListedForDistribution";
 import { lineChartDataDashboard } from "layouts/dashboard/data/lineChartData";
 // import historyFloorPriceData from "layouts/dashboard/data/historyFloorPriceData";
 import { historyFloorPriceOptionsDashboard } from "layouts/dashboard/data/historyFloorPriceOptions";
@@ -104,6 +105,7 @@ export default function Dashboard() {
   const [historyInterval, setHistoryInterval] = useState(3);
 
   const [priceRankData, setPriceRankData] = useState([]);
+  const [priceListedForData, setPriceListedForData] = useState([]);
 
 
   const [collectionProcessedData, setCollectionProcessedData]= useState([]);
@@ -144,21 +146,38 @@ export default function Dashboard() {
     fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/item/all`)
     .then(
       (result) => {
-        let its = [];
+        let rankIts = [];
+        let listedForIts = [];
 
         result.forEach((it, idx) => {
-          its.push({
-            y: it.price, 
-            x: it.rank,
-            name: it.name,
-            mintAddress: it.mintAddress,
-            image: collectionData.image,
-          });
+          if ("rank" in it) {
+            rankIts.push({
+              y: it.price, 
+              x: it.rank,
+              name: it.name,
+              mintAddress: it.mintAddress,
+              image: collectionData.image,
+            });
+          }
+
+          if ("listedFor" in it) {
+            listedForIts.push({
+              y: it.listedFor, 
+              x: it.rank,
+              name: it.name,
+              mintAddress: it.mintAddress,
+              image: collectionData.image,
+            });
+          }
         });
 
         setPriceRankData([{
           name: "Items - price distribution",
-          data: its,
+          data: rankIts,
+        }]);
+        setPriceListedForData([{
+          name: "Items - listed for distribution",
+          data: listedForIts,
         }]);
       },
       (error) => console.error(error)
@@ -329,14 +348,24 @@ export default function Dashboard() {
             </Grid>
           </Grid>
         </VuiBox>
-        {/* <Grid container spacing={3} direction="row" justifyContent="center" alignItems="stretch">
-          <Grid item xs={12} md={6} lg={8}>
-            <Projects />
+        <VuiBox mb={3}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} lg={12} xl={12}>
+              <Card>
+                <VuiBox sx={{ height: "100%" }}>
+                  <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
+                    Items - Listed for distribution
+                  </VuiTypography>
+                  <VuiBox sx={{ height: "400px" }}>
+                  <ItemListedForDistribution
+                      chartData={priceListedForData}
+                    />
+                  </VuiBox>
+                </VuiBox>
+              </Card>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <OrderOverview />
-          </Grid>
-        </Grid> */}
+        </VuiBox>
       </VuiBox>
       <Footer />
     </DashboardLayout>

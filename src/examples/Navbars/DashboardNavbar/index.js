@@ -75,7 +75,7 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
     1: <MenuItem value="1">{"1h"}</MenuItem>,
     5: <MenuItem value="5">{"8h"}</MenuItem>,
     15: <MenuItem value="15">{"24h"}</MenuItem>,
-    60: <MenuItem value="60">{"96h"}</MenuItem>
+    60: <MenuItem value="60">{"7d"}</MenuItem>
   }
 
   const handleIntervalChange = (event) => {
@@ -95,9 +95,6 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
     if (collections && collections.length > 0) {
       const menu = collections.map((el, idx) => <MenuItem value={el.symbol}>{el.name}</MenuItem>);
 
-      // setSelectedSymbol(menu[0].props.value)
-      // setSelectedSymbolName(menu[0].props.value)
-      // setSymbol(menu[0].props.value)
       setSelectMenu(menu);
     }
   }, [collections])
