@@ -52,19 +52,6 @@ function Collection({ image, name, description }) {
   );
 }
 
-function Function({ job, org }) {
-  return (
-    <VuiBox display="flex" flexDirection="column">
-      <VuiTypography variant="caption" fontWeight="medium" color="white">
-        {job}
-      </VuiTypography>
-      <VuiTypography variant="caption" color="text">
-        {org}
-      </VuiTypography>
-    </VuiBox>
-  );
-}
-
 export default function collectionsTableData() {
   
   const fetchWrapper = useFetchWrapper();

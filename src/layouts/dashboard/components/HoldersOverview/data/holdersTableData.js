@@ -29,24 +29,6 @@ import VuiBadge from "components/VuiBadge";
 import { useFetchWrapper } from "_helpers/fetch_wrapper";
 
 
-function Collection({ image, name, description }) {
-  return (
-    <VuiBox display="flex" alignItems="center" px={1} py={0.5}>
-      <VuiBox mr={2}>
-        <VuiAvatar src={image} alt={name} size="sm" variant="rounded" />
-      </VuiBox>
-      <VuiBox display="flex" flexDirection="column">
-        <VuiTypography variant="button" color="white" fontWeight="medium">
-          {name}
-        </VuiTypography>
-        <VuiTypography variant="caption" color="text">
-          {description}
-        </VuiTypography>
-      </VuiBox>
-    </VuiBox>
-  );
-}
-
 export default function collectionsTableData({symbol}) {
   const fetchWrapper = useFetchWrapper();
   
@@ -58,8 +40,7 @@ export default function collectionsTableData({symbol}) {
     if (!symbol || symbol === '')
         return;
 
-    fetch(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/holders`)
-      .then(res => res.json())
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/holders`)
       .then(
         (result) => {
           let its = [];
