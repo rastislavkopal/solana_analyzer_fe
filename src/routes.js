@@ -96,7 +96,7 @@ const routes = [
   //   component: RTL,
   //   noCollapse: true,
   // },
-  // { type: "title", title: "Account Pages", key: "account-pages" },
+  { type: "title", title: "Account Pages", key: "account-pages" },
   // {
   //   type: "collapse",
   //   name: "Profile",
@@ -106,15 +106,15 @@ const routes = [
   //   component: Profile,
   //   noCollapse: true,
   // },
-  // {
-  //   type: "collapse",
-  //   name: "Sign In",
-  //   key: "sign-in",
-  //   route: "/authentication/sign-in",
-  //   icon: <IoIosDocument size="15px" color="inherit" />,
-  //   component: SignIn,
-  //   noCollapse: true,
-  // },
+  {
+    type: "collapse",
+    name: "Sign In",
+    key: "sign-in",
+    route: "/authentication/sign-in",
+    icon: <IoIosDocument size="15px" color="inherit" />,
+    component: SignIn,
+    noCollapse: true,
+  },
   // {
   //   type: "collapse",
   //   name: "Sign Up",

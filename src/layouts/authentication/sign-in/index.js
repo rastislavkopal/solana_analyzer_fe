@@ -58,10 +58,10 @@ function SignIn() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-//   useEffect(() => {
-//     // redirect to home if already logged in
-//     if (auth) history.push('/');
-//   }, []);
+  useEffect(() => {
+    // redirect to home if already logged in
+    if (auth) history.push('/');
+  }, []);
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
@@ -79,7 +79,6 @@ function SignIn() {
             // setError('apiError', { message: error });
             console.error(error);
         });
-      handleClose();
     };
 
 
@@ -165,20 +164,6 @@ function SignIn() {
             SIGN IN
           </Button>
         </VuiBox>
-        {/* <VuiBox mt={3} textAlign="center">
-          <VuiTypography variant="button" color="text" fontWeight="regular">
-            Don&apos;t have an account?{" "}
-            <VuiTypography
-              component={Link}
-              to="/authentication/sign-up"
-              variant="button"
-              color="white"
-              fontWeight="medium"
-            >
-              Sign up
-            </VuiTypography>
-          </VuiTypography>
-        </VuiBox> */}
       </form>
     </CoverLayout>
   );
