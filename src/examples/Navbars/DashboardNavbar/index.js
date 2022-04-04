@@ -52,9 +52,13 @@ import {
 import team2 from "assets/images/team-2.jpg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 
+import { useRecoilState } from 'recoil';
+import { symbolAtom } from '_state/appSymbol';
 
-export default function DashboardNavbar({ absolute, light, isMini, setSymbol, symbol, collections, historyInterval, setHistoryInterval }) {
+export default function DashboardNavbar({ absolute, light, isMini, collections, historyInterval, setHistoryInterval }) {
   
+  const [appSymbol, setAppSymbol] = useRecoilState(symbolAtom);
+
   const userActions = useUserActions();
   
   const [navbarType, setNavbarType] = useState();
@@ -63,8 +67,8 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
 
-  const [selectedSymbol, setSelectedSymbol] = useState(symbol);
-  const [selectedSymbolName, setSelectedSymbolName] = useState(symbol);
+  // const [selectedSymbol, setSelectedSymbol] = useState(appSymbol);
+  const [selectedSymbolName, setSelectedSymbolName] = useState(appSymbol);
   const [openSymbol, setOpenSymbol] = useState(false);
   const [openInterval, setOpenInterval] = useState(false);
   const [selectMenu, setSelectMenu] = useState([]);
@@ -86,8 +90,8 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
   }
 
   const handleSymbolChange = (event) => {
-    setSymbol(event.target.value);
-    setSelectedSymbol(event.target.value)
+    setAppSymbol(event.target.value);
+    // setSelectedSymbol(event.target.value)
     setSelectedSymbolName(event.target.label)
   };
 
@@ -183,13 +187,6 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
       <Toolbar sx={(theme) => navbarContainer(theme)}>
         <VuiBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
           <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
-          {/* <VuiTypography
-            variant="button"
-            fontWeight="medium"
-            color={light ? "white" : "dark"}
-          >
-            {`Collection: ${symbol}`}
-          </VuiTypography> */}
         </VuiBox>
         {isMini ? null : (
           <VuiBox sx={(theme) => navbarRow(theme, { isMini })}>
@@ -212,14 +209,13 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
             </VuiBox>
             <VuiBox pr={1}>
                 <FormControl sx={{ m: 1, minWidth: 120 }}>
-                  {/* <InputLabel id="demo-controlled-open-select-label">Symbol</InputLabel> */}
                   <Select
                     labelId="demo-controlled-open-select-label"
                     id="demo-controlled-open-select"
                     open={openSymbol}
                     onClose={() => setOpenSymbol(false)}
                     onOpen={() => setOpenSymbol(true)}
-                    value={selectedSymbol}
+                    value={appSymbol}
                     label={selectedSymbolName}
                     defaultValue="" 
                     onChange={handleSymbolChange}

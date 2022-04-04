@@ -25,7 +25,6 @@ import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import { IoLogOut, IoLogOutOutline }  from "react-icons/io5";
 
-// Vision UI Dashboard React example components
 import Breadcrumbs from "examples/Breadcrumbs";
 import NotificationItem from "examples/Items/NotificationItem";
 
@@ -52,9 +51,12 @@ import {
 import team2 from "assets/images/team-2.jpg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 
+import { useRecoilState } from 'recoil';
+import { symbolAtom } from '_state/appSymbol';
 
-export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol, collections }) {
+export default function ItemsNavbar({ absolute, light, isMini, collections }) {
 
+  const [appSymbol, setAppSymbol] = useRecoilState(symbolAtom);
   const userActions = useUserActions();
   
   const [navbarType, setNavbarType] = useState();
@@ -63,14 +65,14 @@ export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
 
-  const [selectedSymbol, setSelectedSymbol] = useState(symbol);
-  const [selectedSymbolName, setSelectedSymbolName] = useState(symbol);
+  // const [selectedSymbol, setSelectedSymbol] = useState(symbol);
+  const [selectedSymbolName, setSelectedSymbolName] = useState(appSymbol);
   const [openSymbol, setOpenSymbol] = useState(false);
   const [selectMenu, setSelectMenu] = useState([]);
 
   const handleSymbolChange = (event) => {
-    setSymbol(event.target.value);
-    setSelectedSymbol(event.target.value)
+    setAppSymbol(event.target.value);
+    // setSelectedSymbol(event.target.value)
     setSelectedSymbolName(event.target.label)
   };
 
@@ -79,9 +81,6 @@ export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol
     if (collections && collections.length > 0) {
       const menu = collections.map((el, idx) => <MenuItem value={el.symbol}>{el.name}</MenuItem>);
 
-      // setSelectedSymbol(menu[0].props.value)
-      // setSelectedSymbolName(menu[0].props.value)
-      // setSymbol(menu[0].props.value)
       setSelectMenu(menu);
     }
   }, [collections])
@@ -173,14 +172,13 @@ export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol
           <VuiBox sx={(theme) => navbarRow(theme, { isMini })}>
             <VuiBox pr={1}>
                 <FormControl sx={{ m: 1, minWidth: 120 }}>
-                  {/* <InputLabel id="demo-controlled-open-select-label">Symbol</InputLabel> */}
                   <Select
                     labelId="demo-controlled-open-select-label"
                     id="demo-controlled-open-select"
                     open={openSymbol}
                     onClose={() => setOpenSymbol(false)}
                     onOpen={() => setOpenSymbol(true)}
-                    value={selectedSymbol}
+                    value={appSymbol}
                     label={selectedSymbolName}
                     defaultValue="" 
                     onChange={handleSymbolChange}

@@ -32,8 +32,15 @@ import Table from "examples/Tables/Table";
 
 import holdersTableData from "layouts/dashboard/components/HoldersOverview/data/holdersTableData";
 
-export default function HoldersOverview({symbol}) {
-  const { columns, rows } = holdersTableData({symbol});
+import { useRecoilValue } from 'recoil';
+import { symbolAtom } from '_state/appSymbol';
+
+
+export default function HoldersOverview() {
+
+  const appSymbol = useRecoilValue(symbolAtom);
+  
+  const { columns, rows } = holdersTableData({appSymbol});
   const ownedByTop = (rows && rows.length !== 0) ? rows.reduce((accumulator, curr) => accumulator + curr.count.props.children, 0) : 0;
 
   return (

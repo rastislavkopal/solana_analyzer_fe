@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* Vision UI Free React - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/vision-ui-free-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-react/blob/master LICENSE.md)
-
-* Design and Coded by Simmmple & Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { useState, useEffect } from 'react';
 import moment from 'moment'
 
@@ -39,14 +22,8 @@ import linearGradient from "assets/theme/functions/linearGradient";
 import typography from "assets/theme/base/typography";
 import colors from "assets/theme/base/colors";
 
-// Dashboard layout components
-import WelcomeMark from "layouts/dashboard/components/WelcomeMark";
-import Projects from "layouts/dashboard/components/Projects";
-import OrderOverview from "layouts/dashboard/components/OrderOverview";
 import HoldersOverview from "layouts/dashboard/components/HoldersOverview";
 import TransactionsOverview from "layouts/dashboard/components/TransactionsOverview";
-import SatisfactionRate from "layouts/dashboard/components/SatisfactionRate";
-import ReferralTracking from "layouts/dashboard/components/ReferralTracking";
 
 // React icons
 import { IoIosRocket } from "react-icons/io";
@@ -71,9 +48,13 @@ import { barChartOptionsDashboard } from "layouts/dashboard/data/barChartOptions
 
 import { useFetchWrapper } from "_helpers/fetch_wrapper";
 
+import { useRecoilState } from 'recoil';
+import { symbolAtom } from '_state/appSymbol';
+
 
 export default function Dashboard() {
 
+  const [appSymbol, setAppSymbol] = useRecoilState(symbolAtom);
   const fetchWrapper = useFetchWrapper();
 
   const { gradients } = colors;
@@ -110,116 +91,112 @@ export default function Dashboard() {
 
   const [collectionProcessedData, setCollectionProcessedData]= useState([]);
 
+  function fetchAllData() {
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}`)
+      .then(result => { setCollectionData(result) });
+
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection`)
+      .then(result => { setCollections(result); });
+
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/mainPage`)
+      .then(result => {
+        result.forEach((el, idx) => {
+          if (el.metadata.symbol === appSymbol) {
+            setCollectionProcessedData(el);
+            setFloorPrice((el.metadata.floorPrice / 1e9).toFixed(2));
+            setListedCount(el.metadata.listedCount);
+            setListedTotalValue((el.metadata.listedTotalValue / 1e9).toFixed(2));
+            setAvgPrice24hr((el.metadata.avgPrice24hr / 1e9).toFixed(2));
+            setVolume24hr((el.metadata.volume24hr / 1e9).toFixed(2));
+            setVolumeAll((el.metadata.volumeAll / 1e9).toFixed(2));
+            setFloorPriceChange(el.metadata.floorPriceChange);
+            setListedCountChange(el.metadata.listedCountChange);
+            return;
+          }
+        });
+      });
+
+      fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}/item/all`)
+      .then(
+        (result) => {
+          let rankIts = [];
+          let listedForIts = [];
+
+          result.forEach((it, idx) => {
+            if ("rank" in it) {
+              rankIts.push({
+                y: it.price, 
+                x: it.rank,
+                name: it.name,
+                mintAddress: it.mintAddress,
+                image: collectionData.image,
+              });
+            }
+
+            if ("listedFor" in it) {
+              listedForIts.push({
+                y: it.listedFor, 
+                x: it.rank,
+                name: it.name,
+                mintAddress: it.mintAddress,
+                image: collectionData.image,
+              });
+            }
+          });
+
+          setPriceRankData([{
+            name: "Items - rank distribution",
+            data: rankIts,
+          }]);
+          setPriceListedForData([{
+            name: "Items - listed for distribution",
+            data: listedForIts,
+          }]);
+        },
+        (error) => console.error(error)
+      )
+    
+      fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}/history/complete?limit=100&dense=${historyInterval}`)
+        .then(data => {
+          const floorHistoryArr = [];
+          const historyListingsArr = [];
+
+          setCollectionHistoryData(data);
+          setIsCollectionReady(true);
+
+          data.slice().reverse()
+            .forEach((it, idx) => {
+
+              floorHistoryArr.push({
+                x: it.timestamp, 
+                y: (it.metadata.floorPrice / 1e9).toFixed(2),
+              });
+
+              historyListingsArr.push({
+                x: it.timestamp, 
+                y: it.metadata.listedCount,
+              });
+            }); 
+
+          setHistoryFloorData([{data: floorHistoryArr}]);
+          setHistoryListingsData([{data: historyListingsArr}]);
+        }); 
+  } 
+
   // get collection basic data info
   useEffect(() => {
     try {
-      // setInterval(async () => {
-        fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
-        .then(result => {
-          setCollectionData(result);
-
-        });
-
-      fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection`)
-        .then(result => {
-          setCollections(result);
-        });
-  
-      fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/mainPage`)
-        .then(result => {
-          result.forEach((el, idx) => {
-            if (el.metadata.symbol === symbol) {
-              setCollectionProcessedData(el);
-              setFloorPrice((el.metadata.floorPrice / 1e9).toFixed(2));
-              setListedCount(el.metadata.listedCount);
-              setListedTotalValue((el.metadata.listedTotalValue / 1e9).toFixed(2));
-              setAvgPrice24hr((el.metadata.avgPrice24hr / 1e9).toFixed(2));
-              setVolume24hr((el.metadata.volume24hr / 1e9).toFixed(2));
-              setVolumeAll((el.metadata.volumeAll / 1e9).toFixed(2));
-              setFloorPriceChange(el.metadata.floorPriceChange);
-              setListedCountChange(el.metadata.listedCountChange);
-              return;
-            }
-          });
-        });
-
-    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/item/all`)
-    .then(
-      (result) => {
-        let rankIts = [];
-        let listedForIts = [];
-
-        result.forEach((it, idx) => {
-          if ("rank" in it) {
-            rankIts.push({
-              y: it.price, 
-              x: it.rank,
-              name: it.name,
-              mintAddress: it.mintAddress,
-              image: collectionData.image,
-            });
-          }
-
-          if ("listedFor" in it) {
-            listedForIts.push({
-              y: it.listedFor, 
-              x: it.rank,
-              name: it.name,
-              mintAddress: it.mintAddress,
-              image: collectionData.image,
-            });
-          }
-        });
-
-        setPriceRankData([{
-          name: "Items - price distribution",
-          data: rankIts,
-        }]);
-        setPriceListedForData([{
-          name: "Items - listed for distribution",
-          data: listedForIts,
-        }]);
-      },
-      (error) => console.error(error)
-    )
-  
-    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/history/complete?limit=100&dense=${historyInterval}`)
-      .then(data => {
-        const floorHistoryArr = [];
-        const historyListingsArr = [];
-
-        setCollectionHistoryData(data);
-        setIsCollectionReady(true);
-
-        const recentData = data[0].metadata;
-
-        data.slice().reverse()
-          .forEach((it, idx) => {
-
-            floorHistoryArr.push({
-              x: it.timestamp, 
-              y: (it.metadata.floorPrice / 1e9).toFixed(2),
-            });
-
-            historyListingsArr.push({
-              x: it.timestamp, 
-              y: it.metadata.listedCount,
-            });
-          }); 
-
-        setHistoryFloorData([{data: floorHistoryArr}]);
-        setHistoryListingsData([{data: historyListingsArr}]);
-      }); 
-    // }, 5000);
+      fetchAllData();
+      const renderInterval = setInterval(fetchAllData, 10000);
+      return () => clearInterval(renderInterval);
     } catch(e) {
       console.error(e);
     } 
-    
-  }, [symbol, historyInterval]);
+  }, [appSymbol, historyInterval, collectionData]);
 
   return (
     <DashboardLayout>
-      <DashboardNavbar setSymbol={setSymbol} symbol={symbol} collections={collections} historyInterval={historyInterval} setHistoryInterval={setHistoryInterval}  />
+      <DashboardNavbar collections={collections} historyInterval={historyInterval} setHistoryInterval={setHistoryInterval}  />
       <VuiBox py={3}>
         <VuiBox mb={3}>
           <Grid container spacing={3}>
@@ -296,7 +273,7 @@ export default function Dashboard() {
               </Card>
             </Grid>
             <Grid item xs={12} lg={6} xl={5}>
-              <HoldersOverview symbol={symbol}/>
+              <HoldersOverview/>
             </Grid>
           </Grid>
         </VuiBox>
@@ -326,7 +303,7 @@ export default function Dashboard() {
               </Card>
             </Grid>
             <Grid item xs={12} lg={6} xl={5}>
-            <TransactionsOverview symbol={symbol}/>
+            <TransactionsOverview/>
             </Grid>
           </Grid>
         </VuiBox>

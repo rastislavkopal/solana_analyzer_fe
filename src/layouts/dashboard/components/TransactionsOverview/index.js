@@ -10,8 +10,15 @@ import Table from "examples/Tables/Table";
 
 import trxTableData from "layouts/dashboard/components/TransactionsOverview/data/trxTableData";
 
-export default function TransactionsOverview({symbol}) {
-  const { columns, rows } = trxTableData({symbol});
+import { useRecoilValue } from 'recoil';
+import { symbolAtom } from '_state/appSymbol';
+
+export default function TransactionsOverview() {
+
+  const appSymbol = useRecoilValue(symbolAtom);
+
+  const { columns, rows } = trxTableData({appSymbol});
+  
 
   return (
     <Card className="h-100">

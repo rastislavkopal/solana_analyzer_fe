@@ -29,7 +29,7 @@ import VuiBadge from "components/VuiBadge";
 import { useFetchWrapper } from "_helpers/fetch_wrapper";
 
 
-export default function collectionsTableData({symbol}) {
+export default function collectionsTableData({appSymbol}) {
   const fetchWrapper = useFetchWrapper();
   
   const [error, setError] = useState(null);
@@ -37,10 +37,10 @@ export default function collectionsTableData({symbol}) {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    if (!symbol || symbol === '')
+    if (!appSymbol || appSymbol === '')
         return;
 
-    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/holders`)
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}/holders`)
       .then(
         (result) => {
           let its = [];
@@ -48,10 +48,6 @@ export default function collectionsTableData({symbol}) {
             return b.itemsCount - a.itemsCount;
           }).slice(0,10).forEach((it, idx) => {
             its.push( {
-            //   collection: <Collection image={it.metadata.image} 
-            //     name={ it.metadata.symbol.replaceAll('_', ' ').replace(/(^\w|\s\w)/g, m => m.toUpperCase()) } 
-            //     email={ it.metadata.symbol } />,
-              // function: <Function job="Manager" org="Organization" />,
               'wallet': (
                 <VuiTypography variant="caption" color="white" fontWeight="medium">
                   {it.walletId }
@@ -73,7 +69,7 @@ export default function collectionsTableData({symbol}) {
           setError(error);
         }
       )
-  }, [symbol]);
+  }, [appSymbol]);
 
   return {
     columns: [

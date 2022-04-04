@@ -42,8 +42,12 @@ import { useFetchWrapper } from "_helpers/fetch_wrapper";
 import Item from "layouts/items/components/Item"
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+import { useRecoilState } from 'recoil';
+import { symbolAtom } from '_state/appSymbol';
+
 export default function Items() {
 
+  const [appSymbol, setAppSymbol] = useRecoilState(symbolAtom);
   const fetchWrapper = useFetchWrapper();
   
   const [symbol, setSymbol] = useState('stoned_ape_crew');
@@ -58,7 +62,7 @@ export default function Items() {
         setHasMore( false );
         return;
     }
-    fetch(`https://api-mainnet.magiceden.io/rpc/getListedNFTsByQuery?q={"$match":{"collectionSymbol":"${symbol}"},"$sort":{"takerAmount":1},"$skip":${items.length},"$limit":20,"status":[]}`)
+    fetch(`https://api-mainnet.magiceden.io/rpc/getListedNFTsByQuery?q={"$match":{"collectionSymbol":"${appSymbol}"},"$sort":{"takerAmount":1},"$skip":${items.length},"$limit":20,"status":[]}`)
     .then((res) => res.json())
     .then((result) => {
         setItems(items.concat(result.results));  
@@ -69,11 +73,11 @@ export default function Items() {
   useEffect(() => {
     try {
     setItems([]);
-    fetch(`https://api-mainnet.magiceden.io/rpc/getListedNFTsByQuery?q={"$match":{"collectionSymbol":"${symbol}"},"$sort":{"takerAmount":1},"$skip":${items.length},"$limit":20,"status":[]}`)
+    fetch(`https://api-mainnet.magiceden.io/rpc/getListedNFTsByQuery?q={"$match":{"collectionSymbol":"${appSymbol}"},"$sort":{"takerAmount":1},"$skip":${items.length},"$limit":20,"status":[]}`)
         .then((res) => res.json())
         .then((result) => setItems(result.results))
 
-    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}`)
         .then(result => {
           setCollectionData(result);
         });
@@ -86,12 +90,12 @@ export default function Items() {
       console.error(e);
     } 
     
-  }, [symbol]);
+  }, [appSymbol]);
 
 
 return (
 <DashboardLayout>
-    <ItemsNavbar setSymbol={setSymbol} symbol={symbol} collections={collections} />
+    <ItemsNavbar collections={collections} />
     
     {/* <VuiBox py={3} display="flex" mb="14px" justifyContent="space-between" alignItems="center" > */}
         <InfiniteScroll
