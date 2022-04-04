@@ -187,7 +187,6 @@ export default function Dashboard() {
   useEffect(() => {
     try {
       fetchAllData();
-      const renderInterval = setInterval(fetchAllData, 10000);
       return () => clearInterval(renderInterval);
     } catch(e) {
       console.error(e);
