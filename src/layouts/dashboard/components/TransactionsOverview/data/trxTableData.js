@@ -48,8 +48,8 @@ export default function trxTableData({appSymbol}) {
   useEffect(() => {
     try {
       fetchData();
-      const renderInterval = setInterval(fetchData, 5000);
-      return () => clearInterval(renderInterval);
+      // const renderInterval = setInterval(fetchData, 5000);
+      // return () => clearInterval(renderInterval);
     } catch(e) {
       console.error(e);
     } 
