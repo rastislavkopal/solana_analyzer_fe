@@ -117,7 +117,6 @@ export default function Dashboard() {
         fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
         .then(collectionResult => {
           setCollectionData(collectionResult);
-          console.log(collectionResult);
 
           fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/item/all`)
           .then(
@@ -146,8 +145,6 @@ export default function Dashboard() {
                   });
                 }
               });
-              console.log(rankIts);
-              console.log(listedForIts);
               
               setPriceRankData([{
                 name: "Items - price distribution",
