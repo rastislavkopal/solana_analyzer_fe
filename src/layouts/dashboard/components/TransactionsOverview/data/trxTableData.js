@@ -60,18 +60,18 @@ export default function trxTableData({symbol}) {
     if (!symbol || symbol === '')
         return;
 
-    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/toptransactions/10`)
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/buytransactions/10`)
       .then(
         (result) => {
           let its = [];
           result.slice(0,8).forEach((it, idx) => {
             its.push( {
-              'wallet': (
+              'Buyer': (
                 <VuiTypography variant="caption" color="white" fontWeight="medium">
                   {it.mintAddress }
                 </VuiTypography>
               ),
-              'count': (
+              'price': (
                 <VuiTypography variant="caption" color="lightblue" fontWeight="medium">
                   {it.price.toFixed(2) }
                 </VuiTypography>
@@ -91,8 +91,8 @@ export default function trxTableData({symbol}) {
 
   return {
     columns: [
-      { name: "wallet", align: "left" },
-      { name: "count", align: "center" }
+      { name: "Buyer", align: "left" },
+      { name: "price", align: "center" }
     ],
   
     rows: items,

@@ -115,10 +115,53 @@ export default function Dashboard() {
     try {
       // setInterval(async () => {
         fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
-        .then(result => {
-          setCollectionData(result);
+        .then(collectionResult => {
+          setCollectionData(collectionResult);
+          console.log(collectionResult);
 
+          fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/item/all`)
+          .then(
+            (result) => {
+              let rankIts = [];
+              let listedForIts = [];
+      
+              result.forEach((it, idx) => {
+                if ("rank" in it) {
+                  rankIts.push({
+                    y: it.price, 
+                    x: it.rank,
+                    name: it.name,
+                    mintAddress: it.mintAddress,
+                    image: ("img" in it) ? it.img : collectionResult.image,
+                  });
+                }
+      
+                if ("listedFor" in it) {
+                  listedForIts.push({
+                    y: it.listedFor, 
+                    x: it.rank,
+                    name: it.name,
+                    mintAddress: it.mintAddress,
+                    image: ("img" in it) ? it.img : collectionResult.image,
+                  });
+                }
+              });
+              console.log(rankIts);
+              console.log(listedForIts);
+              
+              setPriceRankData([{
+                name: "Items - price distribution",
+                data: rankIts,
+              }]);
+              setPriceListedForData([{
+                name: "Items - listed for distribution",
+                data: listedForIts,
+              }]);
+            },
+            (error) => console.error(error)
+          )
         });
+  
 
       fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection`)
         .then(result => {
@@ -142,46 +185,6 @@ export default function Dashboard() {
             }
           });
         });
-
-    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/item/all`)
-    .then(
-      (result) => {
-        let rankIts = [];
-        let listedForIts = [];
-
-        result.forEach((it, idx) => {
-          if ("rank" in it) {
-            rankIts.push({
-              y: it.price, 
-              x: it.rank,
-              name: it.name,
-              mintAddress: it.mintAddress,
-              image: collectionData.image,
-            });
-          }
-
-          if ("listedFor" in it) {
-            listedForIts.push({
-              y: it.listedFor, 
-              x: it.rank,
-              name: it.name,
-              mintAddress: it.mintAddress,
-              image: collectionData.image,
-            });
-          }
-        });
-
-        setPriceRankData([{
-          name: "Items - price distribution",
-          data: rankIts,
-        }]);
-        setPriceListedForData([{
-          name: "Items - listed for distribution",
-          data: listedForIts,
-        }]);
-      },
-      (error) => console.error(error)
-    )
   
     fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/history/complete?limit=100&dense=${historyInterval}`)
       .then(data => {
@@ -207,8 +210,8 @@ export default function Dashboard() {
             });
           }); 
 
-        setHistoryFloorData([{data: floorHistoryArr}]);
-        setHistoryListingsData([{data: historyListingsArr}]);
+        setHistoryFloorData([{ name:"Floor price", data: floorHistoryArr }]);
+        setHistoryListingsData([{ name:"Listed count", data: historyListingsArr }]);
       }); 
     // }, 5000);
     } catch(e) {
@@ -336,10 +339,11 @@ export default function Dashboard() {
               <Card>
                 <VuiBox sx={{ height: "100%" }}>
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
-                    Items price distribution
+                    Items - Rank price distribution
                   </VuiTypography>
                   <VuiBox sx={{ height: "400px" }}>
                   <ItemPriceDistribution
+                      symbol={symbol}
                       chartData={priceRankData}
                     />
                   </VuiBox>
@@ -358,6 +362,7 @@ export default function Dashboard() {
                   </VuiTypography>
                   <VuiBox sx={{ height: "400px" }}>
                   <ItemListedForDistribution
+                      symbol={symbol}
                       chartData={priceListedForData}
                     />
                   </VuiBox>
