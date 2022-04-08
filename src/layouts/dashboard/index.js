@@ -137,8 +137,8 @@ export default function Dashboard() {
       
                 if ("listedFor" in it) {
                   listedForIts.push({
-                    y: it.listedFor, 
-                    x: it.rank,
+                    y: it.price, 
+                    x: it.listedFor,
                     name: it.name,
                     mintAddress: it.mintAddress,
                     image: ("img" in it) ? it.img : collectionResult.image,
@@ -336,7 +336,7 @@ export default function Dashboard() {
               <Card>
                 <VuiBox sx={{ height: "100%" }}>
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
-                    Items - Rank price distribution
+                  Price vs. Rank
                   </VuiTypography>
                   <VuiBox sx={{ height: "400px" }}>
                   <ItemPriceDistribution
@@ -355,7 +355,7 @@ export default function Dashboard() {
               <Card>
                 <VuiBox sx={{ height: "100%" }}>
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
-                    Items - Listed for distribution
+                    Price vs Listing duration
                   </VuiTypography>
                   <VuiBox sx={{ height: "400px" }}>
                   <ItemListedForDistribution

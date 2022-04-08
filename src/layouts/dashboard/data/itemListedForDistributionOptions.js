@@ -19,11 +19,19 @@ export const ItemListedForDistributionOptions = {
       theme: "dark",
       custom: ({series, seriesIndex, dataPointIndex, w})=>{
         let data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
-      
+
+        let convertMinutesToTime = (minutes) => {
+          var h = Math.floor(minutes / 60);
+          var m = minutes % 60;
+          h = h < 10 ? '0' + h : h; 
+          m = m < 10 ? '0' + m : m; 
+          return h + 'h ' + m + 'm';
+        }
+
         return `<ul>
             <li><img src="${data.image}" width="auto" height="140"/></li>
             <li>${data.name}</li>
-            <li>price: ${data.y.toFixed(2)}</li>
+            <li>Listed for: ${ convertMinutesToTime(data.y.toFixed(0)) }</li>
         </ul>`;
       },
     },
