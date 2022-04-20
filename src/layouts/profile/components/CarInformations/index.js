@@ -1,26 +1,7 @@
-/*!
-
-=========================================================
-* Vision UI Free React - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/vision-ui-free-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-react/blob/master LICENSE.md)
-
-* Design and Coded by Simmmple & Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
 import React from "react";
 import { Card, Stack, Grid } from "@mui/material";
 import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
-import * as GradientProgress from "@delowar/react-circle-progressbar";
 import GreenLightning from "assets/images/shapes/green-lightning.svg";
 import WhiteLightning from "assets/images/shapes/white-lightning.svg";
 import linearGradient from "assets/theme/functions/linearGradient";
@@ -73,19 +54,6 @@ const CarInformations = () => {
             })}
             alignItems="center"
           >
-            <GradientProgress
-              percent={70}
-              viewport
-              size={170}
-              isGradient
-              background="#080D25"
-              gradient={{
-                angle: 90,
-                startColor: "rgba(5, 205, 153, 0)",
-                stopColor: "#05CD99",
-              }}
-              emptyColor="transparent"
-            >
               <VuiBox
                 display="flex"
                 flexDirection="column"
@@ -100,7 +68,6 @@ const CarInformations = () => {
                   Current Load
                 </VuiTypography>
               </VuiBox>
-            </GradientProgress>
             <VuiBox
               display="flex"
               justifyContent="center"

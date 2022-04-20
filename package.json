@@ -14,10 +14,6 @@
     "url": "git+https://github.com/rastislavkopal/solysis_fe"
   },
   "dependencies": {
-    "@delowar/react-circle-progressbar": "^1.0.0",
-    "@emotion/cache": "11.4.0",
-    "@emotion/react": "11.4.1",
-    "@emotion/styled": "11.3.0",
     "@hookform/resolvers": "^2.8.8",
     "@mui/icons-material": "5.1.1",
     "@mui/material": "5.1.1",

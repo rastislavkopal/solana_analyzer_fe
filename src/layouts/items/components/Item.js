@@ -4,7 +4,6 @@ import Card from "@mui/material/Card";
 import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
 import Grid from "@mui/material/Grid";
-import * as GradientProgress from "@delowar/react-circle-progressbar";
 import GreenLightning from "assets/images/shapes/green-lightning.svg";
 import WhiteLightning from "assets/images/shapes/white-lightning.svg";
 import linearGradient from "assets/theme/functions/linearGradient";

@@ -5,7 +5,6 @@ import VuiTypography from "components/VuiTypography";
 import colors from "assets/theme/base/colors";
 import { FaEllipsisH } from "react-icons/fa";
 import linearGradient from "assets/theme/functions/linearGradient";
-import * as GradientProgress from "@delowar/react-circle-progressbar";
 
 function ReferralTracking() {
   const { info, gradients } = colors;
@@ -116,18 +115,6 @@ function ReferralTracking() {
               </VuiTypography>
             </VuiBox>
           </VuiBox>
-          <GradientProgress
-            percent={70}
-            viewport
-            size={window.innerWidth >= 1024 ? 200 : window.innerWidth >= 768 ? 170 : 200}
-            isGradient
-            gradient={{
-              angle: 90,
-              startColor: "rgba(5, 205, 153, 0)",
-              stopColor: "#05CD99",
-            }}
-            emptyColor="transparent"
-          >
             <VuiBox
               display="flex"
               flexDirection="column"
@@ -144,7 +131,6 @@ function ReferralTracking() {
                 مجموع النقاط
               </VuiTypography>
             </VuiBox>
-          </GradientProgress>
         </VuiBox>
       </VuiBox>
     </Card>

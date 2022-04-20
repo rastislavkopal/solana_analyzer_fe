@@ -3,7 +3,6 @@ import React from "react";
 import { Card } from "@mui/material";
 import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
-import * as GradientProgress from "@delowar/react-circle-progressbar";
 import { IoHappy } from "react-icons/io5";
 import colors from "assets/theme/base/colors";
 import linearGradient from "assets/theme/functions/linearGradient";
@@ -22,18 +21,6 @@ const SatisfactionRate = () => {
           From all projects
         </VuiTypography>
         <VuiBox sx={{ alignSelf: "center", justifySelf: "center", zIndex: "-1" }}>
-          <GradientProgress
-            percent={80}
-            viewport
-            size={200}
-            isGradient
-            gradient={{
-              angle: 90,
-              startColor: "rgba(0, 117, 255, 0)",
-              stopColor: info.main,
-            }}
-            emptyColor="#22234B"
-          >
             <VuiBox
               sx={{
                 background: info.main,
@@ -48,7 +35,6 @@ const SatisfactionRate = () => {
             >
               <IoHappy size="30px" color="#fff" />
             </VuiBox>
-          </GradientProgress>
         </VuiBox>
         <VuiBox
           sx={({ breakpoints }) => ({
