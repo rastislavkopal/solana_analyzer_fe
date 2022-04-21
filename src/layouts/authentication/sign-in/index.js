@@ -91,7 +91,7 @@ function SignIn() {
       color="white"
       description="Enter your email and password to sign in"
       premotto="Ultimate NFT trading tools"
-      motto="SOLYSIS.IO"
+      motto="SOLYSIS"
       // image={bgSignIn}
     >
       <form onSubmit={handleSubmit}>

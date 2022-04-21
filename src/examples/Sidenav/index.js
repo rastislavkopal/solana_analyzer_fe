@@ -231,7 +231,7 @@ function Sidenav({ color, brandName, routes, ...rest }) {
         <VuiBox mt={2}>
           <VuiButton
             component="a"
-            href="mailto:xyz@support@solysis.io"
+            href="mailto:xyz@support@solysis.xyz"
             target="_blank"
             rel="noreferrer"
             variant="gradient"

@@ -46,7 +46,7 @@ function Footer() {
             color="white"
             mr="2px"
           >
-            SOLYSIS.IO
+            SOLYSIS
           </VuiTypography>
           &nbsp;&nbsp;&nbsp;
            All rights reserved.

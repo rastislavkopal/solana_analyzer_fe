@@ -29,6 +29,28 @@ import { useRecoilValue } from 'recoil';
 
 import { authAtom } from '_state/auth';
 
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import {
+    GlowWalletAdapter,
+    LedgerWalletAdapter,
+    PhantomWalletAdapter,
+    SlopeWalletAdapter,
+    SolflareWalletAdapter,
+    SolletExtensionWalletAdapter,
+    SolletWalletAdapter,
+    TorusWalletAdapter,
+} from '@solana/wallet-adapter-wallets';
+import {
+    WalletModalProvider,
+    WalletDisconnectButton,
+    WalletMultiButton
+} from '@solana/wallet-adapter-react-ui';
+import { clusterApiUrl } from '@solana/web3.js';
+
+// Default styles that can be overridden by your app
+require('@solana/wallet-adapter-react-ui/styles.css');
+
 function PrivateRoute({ component: Component, ...rest }) {
   const auth = useRecoilValue(authAtom);
   return (
@@ -45,21 +67,33 @@ function PrivateRoute({ component: Component, ...rest }) {
 }
 
 export default function App() {
+
+  // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
+  const network = WalletAdapterNetwork.Devnet;
+
+  // You can also provide a custom RPC endpoint.
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
+  // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading --
+  // Only the wallets you configure here will be compiled into your application, and only the dependencies
+  // of wallets that your users connect to will be loaded.
+  const wallets = useMemo(
+    () => [
+        new PhantomWalletAdapter(),
+        new GlowWalletAdapter(),
+        new SlopeWalletAdapter(),
+        new SolflareWalletAdapter({ network }),
+        new TorusWalletAdapter(),
+    ],
+    [network]
+  );
+
   const [controller, dispatch] = useVisionUIController();
   const { miniSidenav, direction, layout, openConfigurator, sidenavColor } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   // const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
 
-  // Cache for the rtl
-  // useMemo(() => {
-  //   const cacheRtl = createCache({
-  //     key: "rtl",
-  //     stylisPlugins: [rtlPlugin],
-  //   });
-
-  //   setRtlCache(cacheRtl);
-  // }, []);
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -132,27 +166,36 @@ export default function App() {
   );
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      {layout === "dashboard" && (
-        <>
-          <Sidenav
-            color={sidenavColor}
-            brand=""
-            brandName="SOLYSIS.IO"
-            routes={routes}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
-          />
-          <Configurator />
-          {configsButton}
-        </>
-      )}
-      {layout === "vr" && <Configurator />}
-      <Switch>
-        {getRoutes(routes)}
-        <Redirect from="*" to="/dashboard" />
-      </Switch>
-    </ThemeProvider>
+    <ConnectionProvider endpoint={endpoint}>
+    <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>
+            <WalletMultiButton />
+            <WalletDisconnectButton />
+
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              {layout === "dashboard" && (
+                <>
+                  <Sidenav
+                    color={sidenavColor}
+                    brand=""
+                    brandName="SOLYSIS"
+                    routes={routes}
+                    onMouseEnter={handleOnMouseEnter}
+                    onMouseLeave={handleOnMouseLeave}
+                  />
+                  <Configurator />
+                  {configsButton}
+                </>
+              )}
+              {layout === "vr" && <Configurator />}
+              <Switch>
+                {getRoutes(routes)}
+                <Redirect from="*" to="/dashboard" />
+              </Switch>
+            </ThemeProvider>
+        </WalletModalProvider>
+    </WalletProvider>
+</ConnectionProvider>
   );
 }

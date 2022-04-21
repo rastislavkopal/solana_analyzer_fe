@@ -34,7 +34,7 @@ function useUserActions () {
 
                 // get return url from location state or default to home page
                 // const { from } = history.location.state || { from: { pathname: '/' } };
-                history.push('/dashboard');
+                history.push('/collections');
                 window.location.reload(false);
             });
     }
