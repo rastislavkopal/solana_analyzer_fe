@@ -14,11 +14,14 @@
     "url": "git+https://github.com/rastislavkopal/solysis_fe"
   },
   "dependencies": {
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
     "@hookform/resolvers": "^2.8.8",
     "@mui/icons-material": "5.1.1",
-    "@mui/material": "5.1.1",
+    "@mui/material": "^5.1.1",
     "@mui/styled-engine": "5.1.1",
     "@mui/styles": "^5.2.0",
+    "@nfteyez/sol-rayz": "^0.10.2",
     "@solana/wallet-adapter-base": "^0.9.5",
     "@solana/wallet-adapter-react": "^0.15.4",
     "@solana/wallet-adapter-react-ui": "^0.9.6",

@@ -57,7 +57,7 @@ function PrivateRoute({ component: Component, ...rest }) {
       <Route {...rest} render={props => {
           if (!auth) {
               // not logged in so redirect to login page with the return url
-              return <Redirect to={{ pathname: '/authentication/sign-in', state: { from: props.location } }} />
+              return <Redirect to={{ pathname: '/authentication/wallet-sign-in', state: { from: props.location } }} />
           }
 
           // authorized so return component
@@ -133,7 +133,9 @@ export default function App() {
 
       if (route.route) {
         if (route.route === '/authentication/sign-in')
-          return <Route exact path={route.route} component={route.component} key={route.key}/>;
+          return <Route exact path={route.route} component={route.component} key={route.key} />;
+        else if (route.route === '/authentication/wallet-sign-in')
+          return <Route exact path={route.route} component={route.component} key={route.key} />;
         
         return <PrivateRoute exact path={route.route} component={route.component} key={route.key} />;
       }
@@ -169,9 +171,6 @@ export default function App() {
     <ConnectionProvider endpoint={endpoint}>
     <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-            <WalletMultiButton />
-            <WalletDisconnectButton />
-
             <ThemeProvider theme={theme}>
               <CssBaseline />
               {layout === "dashboard" && (

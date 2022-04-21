@@ -17,6 +17,7 @@ function useUserActions () {
 
     return {
         login,
+        tokenLogin,
         logout,
         getAll
     }
@@ -39,11 +40,29 @@ function useUserActions () {
             });
     }
 
+    function tokenLogin(ownedMints) {
+        return fetchWrapper.post(`${baseUrl}/auth/nftlogin`, { ownedMints })
+        .then(user => {
+            const saveUser = {
+                data: user.user,
+                token: user.token.accessToken,
+            }
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            localStorage.setItem('user', JSON.stringify(saveUser));
+            setAuth(saveUser);
+
+            // get return url from location state or default to home page
+            // const { from } = history.location.state || { from: { pathname: '/' } };
+            history.push('/collections');
+            window.location.reload(false);
+        });
+    }
+
     function logout() {
         // remove user from local storage, set auth state to null and redirect to login page
         localStorage.removeItem('user');
         setAuth(null);
-        history.push('/authentication/sign-in');
+        history.push('/authentication/wallet-sign-in');
     }
 
     function getAll() {

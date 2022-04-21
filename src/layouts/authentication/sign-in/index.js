@@ -61,7 +61,7 @@ function SignIn() {
   useEffect(() => {
     // redirect to home if already logged in
     if (auth) {
-      history.push('/dashboard');
+      history.push('/collections');
       window.location.reload(false);
     }
   }, []);

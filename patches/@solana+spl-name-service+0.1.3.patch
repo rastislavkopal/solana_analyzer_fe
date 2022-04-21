@@ -1,0 +1,14 @@
+diff --git a/node_modules/@solana/spl-name-service/tsconfig.json b/node_modules/@solana/spl-name-service/tsconfig.json
+index ebdb830..8e2e767 100644
+--- a/node_modules/@solana/spl-name-service/tsconfig.json
++++ b/node_modules/@solana/spl-name-service/tsconfig.json
+@@ -22,6 +22,9 @@
+       "sourceMap": true,
+       "baseUrl": ".",
+       "paths": {
++        "crypto": [
++          "../../node_modules/crypto-js"
++        ],
+         "*": ["node_modules/*", "src/types/*"]
+       },
+       "resolveJsonModule": true
