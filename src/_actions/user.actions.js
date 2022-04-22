@@ -41,18 +41,20 @@ function useUserActions () {
     }
 
     function tokenLogin(ownedMints) {
-        return fetchWrapper.post(`${baseUrl}/auth/nftlogin`, { ownedMints })
+        return fetchWrapper.post(`${baseUrl}/auth/nftlogin`, { mints: ownedMints })
         .then(user => {
             const saveUser = {
-                data: user.user,
+                // data: user.user,
                 token: user.token.accessToken,
             }
+            console.log(user);
             // store user details and jwt token in local storage to keep user logged in between page refreshes
             localStorage.setItem('user', JSON.stringify(saveUser));
             setAuth(saveUser);
 
             // get return url from location state or default to home page
             // const { from } = history.location.state || { from: { pathname: '/' } };
+            
             history.push('/collections');
             window.location.reload(false);
         });

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useWallet } from '@solana/wallet-adapter-react';
 import bs58 from 'bs58';
 import React, { FC, useCallback } from 'react';
@@ -13,8 +14,20 @@ import {
 import Button from '@mui/material/Button';
 
 import { useUserActions } from '_actions/user.actions';
+import { authAtom } from '_state/auth';
+import { useRecoilValue } from 'recoil';
 
 export default function SolanaSignInButton() {
+
+    const auth = useRecoilValue(authAtom);
+
+    useEffect(() => {
+        // redirect to home if already logged in
+        if (auth) {
+          history.push('/collections');
+          window.location.reload(false);
+        }
+      }, []);
 
     const userActions = useUserActions();
     const { publicKey, signMessage } = useWallet();
@@ -34,7 +47,10 @@ export default function SolanaSignInButton() {
                 ownedMints.push(nft.mint);
             });
 
-            userActions.tokenLogin({"mints": ownedMints})
+            // const resp = {"mints": ownedMints};
+            // console.log(resp)
+
+            userActions.tokenLogin(ownedMints)
                 .catch(error => {  
                     // setError('apiError', { message: error });
                     console.error(error);
