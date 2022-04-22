@@ -242,7 +242,7 @@ function Configurator() {
             VIEW DOCUMENTATION
           </VuiButton>
         </VuiBox>
-        <VuiBox display="flex" justifyContent="center">
+        <VuiBox justifyContent="center">
           <GitHubButton
             href="https://github.com/creativetimofficial/vision-ui-dashboard-react"
             data-icon="octicon-star"

@@ -3,7 +3,6 @@ import { useState } from "react";
 // react-router-dom components
 import { Link } from "react-router-dom";
 
-// Vision UI Dashboard React components
 import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
 import VuiInput from "components/VuiInput";
@@ -40,6 +39,8 @@ function SignIn() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const [errorMessage, setErrorMessage] = useState('');
+
   useEffect(() => {
     // redirect to home if already logged in
     if (auth) {
@@ -61,8 +62,7 @@ function SignIn() {
       e.preventDefault();
       return userActions.login(username, password)
         .catch(error => {  
-            // setError('apiError', { message: error });
-            console.error(error);
+          setErrorMessage(error);
         });
     };
 
@@ -149,6 +149,14 @@ function SignIn() {
             SIGN IN
           </Button>
         </VuiBox>
+        <VuiTypography
+            variant="caption"
+            color="error"
+            fontWeight="medium"
+            sx={{ cursor: "pointer", userSelect: "none" }}
+          >
+            { errorMessage && <h3 className="error"> { errorMessage } </h3> }
+          </VuiTypography>
       </form>
     </CoverLayout>
   );

@@ -1,9 +1,9 @@
 {
-  "short_name": "Vision UI Dashboard",
-  "name": "Vision UI Dashboard React",
+  "short_name": "Solysi.xyz",
+  "name": "Solysi.xyz React",
   "icons": [
     {
-      "src": "favicon.png",
+      "src": "solysis/favicon-32x32.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/png"
     }

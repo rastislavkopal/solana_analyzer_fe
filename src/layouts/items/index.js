@@ -51,27 +51,36 @@ export default function Items() {
   const [collectionData, setCollectionData] = useState({});
 
   const [items, setItems] = useState([]);
+  const [dbItems, setDbItems] = useState([]);
   const [hasMore, setHasMore] = useState(true);
+  const [isRank, setIsRank] = useState(false);
+  const [rankLimit, setRankLimit] = useState(5);
 
   const fetchMoreData = () => {
+    console.log(items);
     if (items.length >= 500) {
         setHasMore( false );
         return;
     }
-    fetch(`https://api-mainnet.magiceden.io/rpc/getListedNFTsByQuery?q={"$match":{"collectionSymbol":"${symbol}"},"$sort":{"takerAmount":1},"$skip":${items.length},"$limit":20,"status":[]}`)
-    .then((res) => res.json())
-    .then((result) => {
-        setItems(items.concat(result.results));  
-    })
+   fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/forward?q={"$match":{"collectionSymbol":"${symbol}"},"$sort":{"takerAmount":1},"$skip":${items.length},"$limit":20,"status":[]}`)
+    .then(result => {
+      setItems(items.concat(result.results)); 
+    });
+
   };
 
 
   useEffect(() => {
     try {
     setItems([]);
-    fetch(`https://api-mainnet.magiceden.io/rpc/getListedNFTsByQuery?q={"$match":{"collectionSymbol":"${symbol}"},"$sort":{"takerAmount":1},"$skip":${items.length},"$limit":20,"status":[]}`)
-        .then((res) => res.json())
-        .then((result) => setItems(result.results))
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/forward?q={"$match":{"collectionSymbol":"${symbol}"},"$sort":{"takerAmount":1},"$skip":0,"$limit":20,"status":[]}`)
+    .then(result => {
+      setItems(result.results);
+      
+      if ("rarity" in result.results[0]) {
+        setIsRank("howrare" in result.results[0].rarity);
+      }
+    });
 
     fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
         .then(result => {
@@ -82,6 +91,10 @@ export default function Items() {
         .then(result => {
           setCollections(result);
         });
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/item/all`)
+        .then(result => {
+          setDbItems(result);
+        });
     } catch(e) {
       console.error(e);
     } 
@@ -91,7 +104,7 @@ export default function Items() {
 
 return (
 <DashboardLayout>
-    <ItemsNavbar setSymbol={setSymbol} symbol={symbol} collections={collections} />
+    <ItemsNavbar setSymbol={setSymbol} symbol={symbol} collections={collections} isRank={isRank} rankLimit={rankLimit} setRankLimit={setRankLimit}/>
     
     {/* <VuiBox py={3} display="flex" mb="14px" justifyContent="space-between" alignItems="center" > */}
         <InfiniteScroll
@@ -101,13 +114,13 @@ return (
         loader={<h4>Loading...</h4>}
         endMessage={
             <p style={{ textAlign: "center" }}>
-            <b>Yay! You have seen it all</b>
+            <b>End reached</b>
             </p>
         }
         >
         <Grid container spacing={2} justifyContent="center">
             {items.map((it, idx) => (
-                <Item data={it}/>
+                <Item data={it} rankLimit={rankLimit} isRank={isRank}/>
             ))}
         </Grid>
       </InfiniteScroll>

@@ -68,7 +68,8 @@ function Footer() {
           <VuiBox mr={{ xs: "20px", lg: "46px" }}>
             <VuiTypography
               component="a"
-              href="https://twitter.com/solysis_io"
+              target="_blank"
+              href="https://twitter.com/solysis_xyz"
               variant="body2"
               color="white"
             >
@@ -78,11 +79,12 @@ function Footer() {
           <VuiBox>
             <VuiTypography
               component="a"
-              href="#contact"
+              target="_blank"
+              href="https://discord.gg/s9fp8Ub3KZ"
               variant="body2"
               color="white"
             >
-              Contact
+              Discord
             </VuiTypography>
           </VuiBox>
         </VuiBox>

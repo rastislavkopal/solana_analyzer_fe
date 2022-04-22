@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useWallet } from '@solana/wallet-adapter-react';
 import bs58 from 'bs58';
 import React, { FC, useCallback } from 'react';
@@ -11,6 +11,8 @@ import {
     Options,
   } from "@nfteyez/sol-rayz";
 
+import VuiBox from "components/VuiBox";
+import VuiTypography from "components/VuiTypography";
 import Button from '@mui/material/Button';
 
 import { useUserActions } from '_actions/user.actions';
@@ -20,6 +22,7 @@ import { useRecoilValue } from 'recoil';
 export default function SolanaSignInButton() {
 
     const auth = useRecoilValue(authAtom);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         // redirect to home if already logged in
@@ -51,9 +54,8 @@ export default function SolanaSignInButton() {
             // console.log(resp)
 
             userActions.tokenLogin(ownedMints)
-                .catch(error => {  
-                    // setError('apiError', { message: error });
-                    console.error(error);
+                .catch(error => {
+                    setErrorMessage(error);
                 });
             
         } catch (error) {
@@ -85,8 +87,18 @@ export default function SolanaSignInButton() {
 
 
     return signMessage ? (
-        <Button onClick={ () => onClick() } type="submit" variant="contained" color="info" fullWidth disabled={!publicKey}>
-            SIGN IN
-        </Button>
+        <VuiBox>
+            <Button onClick={ () => onClick() } type="submit" variant="contained" color="info" fullWidth disabled={!publicKey}>
+                SIGN IN
+            </Button>
+            <VuiTypography
+            variant="caption"
+            color="error"
+            fontWeight="medium"
+            sx={{ cursor: "pointer", userSelect: "none" }}
+          >
+            { errorMessage && <h3 className="error"> { errorMessage } </h3> }
+          </VuiTypography>
+        </VuiBox>
       ) : null;
 }

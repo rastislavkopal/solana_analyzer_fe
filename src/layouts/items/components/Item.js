@@ -9,39 +9,52 @@ import WhiteLightning from "assets/images/shapes/white-lightning.svg";
 import linearGradient from "assets/theme/functions/linearGradient";
 import colors from "assets/theme/base/colors";
 
-export default function Item(props) {
+export default function Item({data, rankLimit, isRank}) {
     const { gradients, info } = colors;
     const { cardContent } = gradients;
 
   return (
   <Grid 
-    item xs={6}
-    md={2} 
+    item xs={6} sm={6} md={2} 
     component="a"
-    href={`https://magiceden.io/item-details/${props.data.id}`}
+    href={`https://magiceden.io/item-details/${data.id}`}
     target="_blank"
     rel="noreferrer"
     // background="success"
   >
-    <VuiBox
+    <VuiBox 
+        display="flex"
+        flexDirection="column"
+        // alignItems="flex-start"
+        mr="10px"
+        justifyContent="center"
+        alignItems="center"
         sx={{
-            background: linearGradient(cardContent.main, cardContent.state, cardContent.deg),
+            background: (isRank && 'rarity' in data 
+                        && "howrare" in data.rarity && data.rarity.howrare.rank < rankLimit) ? 
+                        linearGradient("#c74438", "#a61f12")  : 
+                        linearGradient(cardContent.main, cardContent.state, cardContent.deg),
             minHeight: "110px",
             borderRadius: "20px",
         }}
     >
         <VuiBox pt={2} px={2} >
-        <img src={props.data.img} width="auto" height="150" />
+            <img src={data.img} width="auto" height="150" />
         </VuiBox>
         <VuiBox p={2}>
             <VuiBox component="h5" display="flex" flexDirection="column" p={0} m={0} color="primary">
-                {props.data.title}
+                {data.title}
             </VuiBox>
+            { (isRank && "rarity" in data  && "howrare" in data.rarity) &&
+                <VuiTypography variant="h6" fontWeight="medium" color="info">
+                    {`Rank: ${data.rarity.howrare.rank}`}
+                </VuiTypography>
+            }
             <VuiTypography variant="h6" fontWeight="medium" textTransform="capitalize" color="text">
-                price: {props.data.price.toFixed(2)}
+                price: {data.price.toFixed(2)}
             </VuiTypography>
             {/* <VuiTypography variant="h6" fontWeight="medium" textTransform="capitalize" color="text">
-                Rank: {props.data.rarity}
+                Rank: {data.rarity}
             </VuiTypography> */}
         </VuiBox>
     </VuiBox>

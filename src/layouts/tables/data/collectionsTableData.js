@@ -1,21 +1,3 @@
-/*!
-
-=========================================================
-* Vision UI Free React - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/vision-ui-free-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-react/blob/master LICENSE.md)
-
-* Design and Coded by Simmmple & Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
 /* eslint-disable react/prop-types */
 // Vision UI Dashboard React components
 import React, { useState, useEffect } from 'react';
@@ -77,7 +59,7 @@ export default function collectionsTableData() {
               ),
               'floor price change (%)': (
                 <VuiTypography variant="caption" color={(it.metadata.floorPriceChange.charAt(0) === '-' ) ? "error" : "success" } fontWeight="medium">
-                  {it.metadata.floorPriceChange }
+                  { `${it.metadata.floorPriceChange} %` }
                 </VuiTypography>
               ),
               'volume 24h': (
@@ -106,8 +88,8 @@ export default function collectionsTableData() {
                 </VuiTypography>
               ),
               'Listed count change (%)': (
-                <VuiTypography variant="caption" color={(it.metadata.listedCountChange.charAt(0) === '-' ) ? "error" : "success" } fontWeight="medium">
-                  {it.metadata.listedCountChange }
+                <VuiTypography variant="caption" color={(it.metadata.listedCountChange.charAt(0) === '-' ) ? "success" : "error" } fontWeight="medium">
+                  { `${it.metadata.listedCountChange} %` }
                 </VuiTypography>
               ),
               action: (

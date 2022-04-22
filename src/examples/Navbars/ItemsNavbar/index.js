@@ -12,6 +12,7 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import Icon from "@mui/material/Icon";
+import TextField from '@mui/material/TextField';
 
 // Vision UI Dashboard React components
 import VuiBox from "components/VuiBox";
@@ -53,7 +54,7 @@ import team2 from "assets/images/team-2.jpg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 
 
-export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol, collections }) {
+export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol, collections, isRank, rankLimit, setRankLimit }) {
 
   const userActions = useUserActions();
   
@@ -73,6 +74,11 @@ export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol
     setSelectedSymbol(event.target.value)
     setSelectedSymbolName(event.target.label)
   };
+
+  const handleRankLimitChange = (e) => {
+    console.log(e);
+    setRankLimit(e.target.value);
+  }
 
 
   useEffect(() => {
@@ -171,8 +177,37 @@ export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol
         </VuiBox>
         {isMini ? null : (
           <VuiBox sx={(theme) => navbarRow(theme, { isMini })}>
+            <VuiBox
+                display="flex"
+                flexDirection="column"
+                alignItems="flex-end"
+                mr="5px"
+              >
+              { !isRank &&
+                <VuiTypography variant="xxs" color="error" fontWeight="bold" mr="5px" mb="5px">
+                Rank not detected.
+                </VuiTypography>
+              }
+              { isRank &&
+                <TextField
+                  sx={{
+                    width: '50%',
+                  }}
+                  // helperText="Rank limit"
+                  color="light"
+                  id="rank-limit"
+                  value={rankLimit}
+                  label="Rank limit"
+                  variant="standard"
+                  type="number"
+                  // variant="standard" 
+                  onChange={ (e) => handleRankLimitChange(e) }
+                  focused
+                /> 
+            } 
+            </VuiBox>
             <VuiBox pr={1}>
-                <FormControl sx={{ m: 1, minWidth: 120 }}>
+                <FormControl sx={{ pt:2, m: 1, minWidth: 120 }}>
                   {/* <InputLabel id="demo-controlled-open-select-label">Symbol</InputLabel> */}
                   <Select
                     labelId="demo-controlled-open-select-label"
