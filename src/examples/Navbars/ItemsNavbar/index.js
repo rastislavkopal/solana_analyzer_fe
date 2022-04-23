@@ -53,10 +53,13 @@ import {
 import team2 from "assets/images/team-2.jpg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 
+import { useRecoilState } from 'recoil';
+import { symbolAtom } from '_state/appSymbol';
 
-export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol, collections, isRank, rankLimit, setRankLimit }) {
+export default function ItemsNavbar({ absolute, light, isMini, collections, isRank, rankLimit, setRankLimit }) {
 
   const userActions = useUserActions();
+  const [appSymbol, setAppSymbol] = useRecoilState(symbolAtom);
   
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useVisionUIController();
@@ -64,13 +67,13 @@ export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
 
-  const [selectedSymbol, setSelectedSymbol] = useState(symbol);
-  const [selectedSymbolName, setSelectedSymbolName] = useState(symbol);
+  const [selectedSymbol, setSelectedSymbol] = useState(appSymbol);
+  const [selectedSymbolName, setSelectedSymbolName] = useState(appSymbol);
   const [openSymbol, setOpenSymbol] = useState(false);
   const [selectMenu, setSelectMenu] = useState([]);
 
   const handleSymbolChange = (event) => {
-    setSymbol(event.target.value);
+    setAppSymbol(event.target.value);
     setSelectedSymbol(event.target.value)
     setSelectedSymbolName(event.target.label)
   };
@@ -87,7 +90,7 @@ export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol
 
       // setSelectedSymbol(menu[0].props.value)
       // setSelectedSymbolName(menu[0].props.value)
-      // setSymbol(menu[0].props.value)
+      // setAppSymbol(menu[0].props.value)
       setSelectMenu(menu);
     }
   }, [collections])
@@ -208,7 +211,7 @@ export default function ItemsNavbar({ absolute, light, isMini, setSymbol, symbol
             </VuiBox>
             <VuiBox pr={1}>
                 <FormControl sx={{ pt:2, m: 1, minWidth: 120 }}>
-                  {/* <InputLabel id="demo-controlled-open-select-label">Symbol</InputLabel> */}
+                  {/* <InputLabel id="demo-controlled-open-select-label">appSymbol</InputLabel> */}
                   <Select
                     labelId="demo-controlled-open-select-label"
                     id="demo-controlled-open-select"

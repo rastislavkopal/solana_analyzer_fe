@@ -12,32 +12,11 @@ import { history } from "_helpers/history";
 
 import { useFetchWrapper } from "_helpers/fetch_wrapper";
 
-import { useHistory, Link } from "react-router-dom";
+import { useHistory, Link, Redirect } from "react-router-dom";
 
-function selectCollection(e, symbol) {
-  e.preventDefault();
-  e.stopPropagation();
-  history.push('/dashboard');
-  window.location.reload(false);
-}
+import { useRecoilState } from 'recoil';
+import { symbolAtom } from '_state/appSymbol';
 
-function Collection({ image, name, symbol }) {
-  return (
-    <VuiBox display="flex" alignItems="center" px={1} py={0.5}>
-      <VuiBox mr={2}>
-        <VuiAvatar src={image} alt={name} size="sm" variant="rounded" />
-      </VuiBox>
-      <VuiBox display="flex" flexDirection="column">
-        <VuiTypography variant="button" color="white" fontWeight="medium" component="a" href="#" onClick={ (e) => selectCollection(e, symbol) }>
-          {name}
-        </VuiTypography>
-        <VuiTypography variant="caption" color="text">
-          {symbol}
-        </VuiTypography>
-      </VuiBox>
-    </VuiBox>
-  );
-}
 
 export default function collectionsTableData() {
   
@@ -46,6 +25,35 @@ export default function collectionsTableData() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState([]);
+  const [appSymbol, setAppSymbol] = useRecoilState(symbolAtom);
+  const [toRedirect, setToRedirect] = useState(false);
+  const history = useHistory();
+
+  const selectCollection = (e, symbol) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setAppSymbol(symbol);
+    history.push('/dashboard');
+    setToRedirect(true);
+  }
+  
+  const Collection = ({ image, name, symbol }) => {
+    return (
+      <VuiBox display="flex" alignItems="center" px={1} py={0.5}>
+        <VuiBox mr={2}>
+          <VuiAvatar src={image} alt={name} size="sm" variant="rounded" />
+        </VuiBox>
+        <VuiBox display="flex" flexDirection="column">
+          <VuiTypography variant="button" color="white" fontWeight="medium" component="a" href="#" onClick={ (e) => selectCollection(e, symbol) }>
+            {name}
+          </VuiTypography>
+          <VuiTypography variant="caption" color="text">
+            {symbol}
+          </VuiTypography>
+        </VuiBox>
+      </VuiBox>
+    );
+  }
 
   useEffect(() => {
     fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/mainPage`)
@@ -58,6 +66,7 @@ export default function collectionsTableData() {
                 symbol={ it.metadata.symbol } />,
               'floor price': (
                 <VuiTypography variant="caption" color="white" fontWeight="medium">
+                  {/* { toRedirect && <Redirect to='/dashboard'/> } */}
                   {it.metadata.floorPrice / 1e9 }
                 </VuiTypography>
               ),

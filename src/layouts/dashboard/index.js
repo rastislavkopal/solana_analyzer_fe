@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import moment from 'moment'
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -16,25 +15,16 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import MiniStatisticsCard from "examples/Cards/StatisticsCards/MiniStatisticsCard";
-import linearGradient from "assets/theme/functions/linearGradient";
 
 // Vision UI Dashboard React base styles
 import typography from "assets/theme/base/typography";
 import colors from "assets/theme/base/colors";
 
-// Dashboard layout components
-import WelcomeMark from "layouts/dashboard/components/WelcomeMark";
-import Projects from "layouts/dashboard/components/Projects";
-import OrderOverview from "layouts/dashboard/components/OrderOverview";
 import HoldersOverview from "layouts/dashboard/components/HoldersOverview";
 import TransactionsOverview from "layouts/dashboard/components/TransactionsOverview";
-import SatisfactionRate from "layouts/dashboard/components/SatisfactionRate";
-import ReferralTracking from "layouts/dashboard/components/ReferralTracking";
 
-// React icons
-import { IoIosRocket } from "react-icons/io";
-import { IoConstructOutline, IoGlobe } from "react-icons/io5";
-import { IoBuild } from "react-icons/io5";
+
+import { IoGlobe } from "react-icons/io5";
 import { IoWallet } from "react-icons/io5";
 import { VscRocket } from "react-icons/vsc"
 import { IoDocumentText } from "react-icons/io5";
@@ -42,18 +32,15 @@ import { FaShoppingCart } from "react-icons/fa";
 
 // Data
 import LineChart from "examples/Charts/LineCharts/LineChart";
-import BarChart from "examples/Charts/BarCharts/BarChart";
 import ItemPriceDistribution from "examples/Charts/ScatterCharts/ItemPriceDistribution";
 import ItemListedForDistribution from "examples/Charts/ScatterCharts/ItemListedForDistribution";
-import { lineChartDataDashboard } from "layouts/dashboard/data/lineChartData";
 // import historyFloorPriceData from "layouts/dashboard/data/historyFloorPriceData";
 import { historyFloorPriceOptionsDashboard } from "layouts/dashboard/data/historyFloorPriceOptions";
-import { lineChartOptionsDashboard } from "layouts/dashboard/data/lineChartOptions";
-import { barChartDataDashboard } from "layouts/dashboard/data/barChartData";
-import { barChartOptionsDashboard } from "layouts/dashboard/data/barChartOptions";
 
 import { useFetchWrapper } from "_helpers/fetch_wrapper";
 
+import { useRecoilState } from 'recoil';
+import { symbolAtom } from '_state/appSymbol';
 
 export default function Dashboard() {
 
@@ -62,28 +49,23 @@ export default function Dashboard() {
   const { gradients } = colors;
   const { cardContent } = gradients;
   
-  const [symbol, setSymbol] = useState('stoned_ape_crew');
+  const [appSymbol, setAppSymbol] = useRecoilState(symbolAtom);
+  // const [symbol, setSymbol] = useState('stoned_ape_crew');
 
   const [collections, setCollections] = useState([]);
   const [collectionData, setCollectionData] = useState({});
-  const [collectionHistoryData, setCollectionHistoryData] = useState([]);
   const [historyFloorData, setHistoryFloorData] = useState([]);
   const [historyListingsData, setHistoryListingsData] = useState([]);
   const [historyAvgPriceData, setHistoryAvgPriceData] = useState([]);
   const [historyVolumeData, setHistoryVolumeData] = useState([]);
 
-  const [isCollectionReady, setIsCollectionReady] = useState(false);
   const [change24HourPrice, setChange24HourPrice] = useState(0);
   const [change24HourVolume, setChange24HourVolume] = useState(0); 
-  const [changeListedCount, setChangeListedCount] = useState(0);
-  const [changeFloorPrice, setChangeFloorPrice] = useState(0);
 
   const [avgPrice24hr, setAvgPrice24hr] = useState(0);
   const [floorPrice, setFloorPrice] = useState(0);
   const [listedCount, setListedCount] = useState(0);
-  const [listedTotalValue, setListedTotalValue] = useState(0);  
   const [volume24hr, setVolume24hr] = useState(0); 
-  const [volumeAll, setVolumeAll] = useState(0); 
   const [floorPriceChange, setFloorPriceChange] = useState(' ');
   const [listedCountChange, setListedCountChange] = useState(' ');
 
@@ -102,11 +84,11 @@ export default function Dashboard() {
     setIsRank(false);
     try {
       // setInterval(async () => {
-        // fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/`)
+        // fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}/`)
         // .then(collectionResult => {
         //   setCollectionData(collectionResult);
 
-          fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/item/all`)
+          fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}/item/all`)
           .then(
             (result) => {
               // console.log(result)
@@ -115,7 +97,6 @@ export default function Dashboard() {
 
               if ("rank" in result[0]) {
                 setIsRank(true);
-                console.log(resukt[0]);
               }
       
               result.forEach((it, idx) => {
@@ -161,14 +142,12 @@ export default function Dashboard() {
       fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/mainPage`)
         .then(result => {
           result.forEach((el, idx) => {
-            if (el.metadata.symbol === symbol) {
+            if (el.metadata.symbol === appSymbol) {
               setCollectionProcessedData(el);
               setFloorPrice((el.metadata.floorPrice / 1e9).toFixed(2));
               setListedCount(el.metadata.listedCount);
-              setListedTotalValue((el.metadata.listedTotalValue / 1e9).toFixed(2));
               setAvgPrice24hr((el.metadata.avgPrice24hr / 1e9).toFixed(2));
               setVolume24hr((el.metadata.volume24hr / 1e9).toFixed(2));
-              setVolumeAll((el.metadata.volumeAll / 1e9).toFixed(2));
               setFloorPriceChange(el.metadata.floorPriceChange);
               setListedCountChange(el.metadata.listedCountChange);
               return;
@@ -176,15 +155,12 @@ export default function Dashboard() {
           });
         });
   
-    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/history/complete?limit=100&dense=${historyInterval}`)
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}/history/complete?limit=100&dense=${historyInterval}`)
       .then(data => {
         const floorHistoryArr = [];
         const historyListingsArr = [];
         const avgPriceHistory = [];
         const volumeHistory = [];
-
-        setCollectionHistoryData(data);
-        setIsCollectionReady(true);
 
         const recentData = data[0].metadata;
 
@@ -222,11 +198,11 @@ export default function Dashboard() {
       console.error(e);
     } 
     
-  }, [symbol, historyInterval]);
+  }, [appSymbol, historyInterval]);
 
   return (
     <DashboardLayout>
-      <DashboardNavbar setSymbol={setSymbol} symbol={symbol} collections={collections} historyInterval={historyInterval} setHistoryInterval={setHistoryInterval}  />
+      <DashboardNavbar collections={collections} historyInterval={historyInterval} setHistoryInterval={setHistoryInterval}  />
       <VuiBox py={3}>
         <VuiBox mb={3}>
           <Grid container spacing={3}>
@@ -303,7 +279,7 @@ export default function Dashboard() {
               </Card>
             </Grid>
             <Grid item xs={12} lg={6} xl={5}>
-              <TransactionsOverview symbol={symbol}/>
+              <TransactionsOverview symbol={appSymbol}/>
             </Grid>
           </Grid>
         </VuiBox>
@@ -333,7 +309,7 @@ export default function Dashboard() {
               </Card>
             </Grid>
             <Grid item xs={12} lg={6} xl={5}>
-              <HoldersOverview symbol={symbol} isRank={isRank}/>
+              <HoldersOverview symbol={appSymbol} isRank={isRank}/>
             </Grid>
           </Grid>
         </VuiBox>
@@ -381,7 +357,7 @@ export default function Dashboard() {
                   </VuiTypography>
                   <VuiBox sx={{ height: "400px" }}>
                   <ItemPriceDistribution
-                      symbol={symbol}
+                      symbol={appSymbol}
                       chartData={priceRankData}
                       isRank={isRank}
                     />
@@ -401,7 +377,7 @@ export default function Dashboard() {
                   </VuiTypography>
                   <VuiBox sx={{ height: "400px" }}>
                   <ItemListedForDistribution
-                      symbol={symbol}
+                      symbol={appSymbol}
                       chartData={priceListedForData}
                       isRank={isRank}
                     />

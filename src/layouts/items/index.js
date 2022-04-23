@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* Vision UI Free React - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/vision-ui-free-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-react/blob/master LICENSE.md)
-
-* Design and Coded by Simmmple & Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { useState, useEffect } from 'react';
 import moment from 'moment'
 
@@ -42,11 +25,15 @@ import { useFetchWrapper } from "_helpers/fetch_wrapper";
 import Item from "layouts/items/components/Item"
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+import { useRecoilState } from 'recoil';
+import { symbolAtom } from '_state/appSymbol';
+
 export default function Items() {
 
   const fetchWrapper = useFetchWrapper();
-  
-  const [symbol, setSymbol] = useState('stoned_ape_crew');
+
+  const [appSymbol, setAppSymbol] = useRecoilState(symbolAtom);
+  // const [symbol, setSymbol] = useState('stoned_ape_crew');
   const [collections, setCollections] = useState([]);
   const [collectionData, setCollectionData] = useState({});
 
@@ -62,7 +49,7 @@ export default function Items() {
         setHasMore( false );
         return;
     }
-   fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/forward?q={"$match":{"collectionSymbol":"${symbol}"},"$sort":{"takerAmount":1},"$skip":${items.length},"$limit":20,"status":[]}`)
+   fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/forward?q={"$match":{"collectionSymbol":"${appSymbol}"},"$sort":{"takerAmount":1},"$skip":${items.length},"$limit":20,"status":[]}`)
     .then(result => {
       setItems(items.concat(result.results)); 
     });
@@ -73,7 +60,7 @@ export default function Items() {
   useEffect(() => {
     try {
     setItems([]);
-    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/forward?q={"$match":{"collectionSymbol":"${symbol}"},"$sort":{"takerAmount":1},"$skip":0,"$limit":20,"status":[]}`)
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/forward?q={"$match":{"collectionSymbol":"${appSymbol}"},"$sort":{"takerAmount":1},"$skip":0,"$limit":20,"status":[]}`)
     .then(result => {
       setItems(result.results);
       
@@ -82,7 +69,7 @@ export default function Items() {
       }
     });
 
-    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}`)
         .then(result => {
           setCollectionData(result);
         });
@@ -91,7 +78,7 @@ export default function Items() {
         .then(result => {
           setCollections(result);
         });
-    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/item/all`)
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}/item/all`)
         .then(result => {
           setDbItems(result);
         });
@@ -99,12 +86,12 @@ export default function Items() {
       console.error(e);
     } 
     
-  }, [symbol]);
+  }, [appSymbol]);
 
 
 return (
 <DashboardLayout>
-    <ItemsNavbar setSymbol={setSymbol} symbol={symbol} collections={collections} isRank={isRank} rankLimit={rankLimit} setRankLimit={setRankLimit}/>
+    <ItemsNavbar collections={collections} isRank={isRank} rankLimit={rankLimit} setRankLimit={setRankLimit}/>
     
     {/* <VuiBox py={3} display="flex" mb="14px" justifyContent="space-between" alignItems="center" > */}
         <InfiniteScroll

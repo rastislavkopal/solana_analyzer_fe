@@ -52,10 +52,13 @@ import {
 import team2 from "assets/images/team-2.jpg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 
+import { useRecoilState } from 'recoil';
+import { symbolAtom } from '_state/appSymbol';
 
-export default function DashboardNavbar({ absolute, light, isMini, setSymbol, symbol, collections, historyInterval, setHistoryInterval }) {
+export default function DashboardNavbar({ absolute, light, isMini, collections, historyInterval, setHistoryInterval }) {
   
   const userActions = useUserActions();
+  const [appSymbol, setAppSymbol] = useRecoilState(symbolAtom);
   
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useVisionUIController();
@@ -63,8 +66,8 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
 
-  const [selectedSymbol, setSelectedSymbol] = useState(symbol);
-  const [selectedSymbolName, setSelectedSymbolName] = useState(symbol);
+  const [selectedSymbol, setSelectedSymbol] = useState(appSymbol);
+  const [selectedSymbolName, setSelectedSymbolName] = useState(appSymbol);
   const [openSymbol, setOpenSymbol] = useState(false);
   const [openInterval, setOpenInterval] = useState(false);
   const [selectMenu, setSelectMenu] = useState([]);
@@ -86,7 +89,7 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
   }
 
   const handleSymbolChange = (event) => {
-    setSymbol(event.target.value);
+    setAppSymbol(event.target.value);
     setSelectedSymbol(event.target.value)
     setSelectedSymbolName(event.target.label)
   };
@@ -183,13 +186,6 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
       <Toolbar sx={(theme) => navbarContainer(theme)}>
         <VuiBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
           <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
-          {/* <VuiTypography
-            variant="button"
-            fontWeight="medium"
-            color={light ? "white" : "dark"}
-          >
-            {`Collection: ${symbol}`}
-          </VuiTypography> */}
         </VuiBox>
         {isMini ? null : (
           <VuiBox sx={(theme) => navbarRow(theme, { isMini })}>
@@ -228,40 +224,7 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
                   </Select>
                 </FormControl>
             </VuiBox>
-            {/* <VuiBox pr={1}>
-              <VuiInput
-                placeholder="Type here..."
-                icon={{ component: "search", direction: "left" }}
-                sx={({ breakpoints }) => ({
-                  [breakpoints.down("sm")]: {
-                    maxWidth: "80px",
-                  },
-                  [breakpoints.only("sm")]: {
-                    maxWidth: "80px",
-                  },
-                  backgroundColor: "info.main !important",
-                })}
-              />
-            </VuiBox> */}
             <VuiBox color={light ? "white" : "inherit"}>
-              {/* <Link to="/authentication/sign-in">
-                <IconButton sx={navbarIconButton} size="small">
-                  <Icon
-                    sx={({ palette: { dark, white } }) => ({
-                      color: light ? white.main : dark.main,
-                    })}
-                  >
-                    account_circle
-                  </Icon>
-                  <VuiTypography
-                    variant="button"
-                    fontWeight="medium"
-                    color={light ? "white" : "dark"}
-                  >
-                    Sign in
-                  </VuiTypography>
-                </IconButton>
-              </Link> */}
               <IconButton
                 size="small"
                 color="inherit"
@@ -270,14 +233,6 @@ export default function DashboardNavbar({ absolute, light, isMini, setSymbol, sy
               >
                 <Icon className={"text-white"}>{miniSidenav ? "menu_open" : "menu"}</Icon>
               </IconButton>
-              {/* <IconButton
-                size="small"
-                color="inherit"
-                sx={navbarIconButton}
-                onClick={handleLogout}
-              >
-                <Icon>settings</Icon>
-              </IconButton> */}
               <IconButton
                 size="small"
                 color="inherit"
