@@ -84,9 +84,9 @@ export default function Dashboard() {
     setIsRank(false);
     try {
       // setInterval(async () => {
-        // fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}/`)
-        // .then(collectionResult => {
-        //   setCollectionData(collectionResult);
+        fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}/`)
+        .then(collectionResult => {
+          setCollectionData(collectionResult);
 
           fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}/item/all`)
           .then(
@@ -106,7 +106,7 @@ export default function Dashboard() {
                     x: it.rank,
                     name: it.name,
                     mintAddress: it.mintAddress,
-                    image: ("img" in it) ? it.img : "", //collectionResult.image,
+                    image: ("img" in it) ? it.img : collectionResult.image,
                   });
                 }
       
@@ -116,7 +116,7 @@ export default function Dashboard() {
                     x: it.listedFor,
                     name: it.name,
                     mintAddress: it.mintAddress,
-                    image: ("img" in it) ? it.img : "", //collectionResult.image,
+                    image: ("img" in it) ? it.img : collectionResult.image,
                   });
                 }
               });
@@ -131,7 +131,7 @@ export default function Dashboard() {
             },
             (error) => console.error(error)
           )
-        // });
+        });
   
 
       fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection`)
