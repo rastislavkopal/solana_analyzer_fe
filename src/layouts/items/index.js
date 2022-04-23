@@ -54,7 +54,7 @@ export default function Items() {
   const [dbItems, setDbItems] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [isRank, setIsRank] = useState(false);
-  const [rankLimit, setRankLimit] = useState(5);
+  const [rankLimit, setRankLimit] = useState(1000);
 
   const fetchMoreData = () => {
     console.log(items);

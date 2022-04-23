@@ -8,26 +8,31 @@ import VuiButton from "components/VuiButton";
 import VuiAvatar from "components/VuiAvatar";
 import VuiBadge from "components/VuiBadge";
 
+import { history } from "_helpers/history";
+
 import { useFetchWrapper } from "_helpers/fetch_wrapper";
 
 import { useHistory, Link } from "react-router-dom";
 
-function goToDashboard(symbol) {
-  history.push("/home");
+function selectCollection(e, symbol) {
+  e.preventDefault();
+  e.stopPropagation();
+  history.push('/dashboard');
+  window.location.reload(false);
 }
 
-function Collection({ image, name, description }) {
+function Collection({ image, name, symbol }) {
   return (
     <VuiBox display="flex" alignItems="center" px={1} py={0.5}>
       <VuiBox mr={2}>
         <VuiAvatar src={image} alt={name} size="sm" variant="rounded" />
       </VuiBox>
       <VuiBox display="flex" flexDirection="column">
-        <VuiTypography variant="button" color="white" fontWeight="medium">
+        <VuiTypography variant="button" color="white" fontWeight="medium" component="a" href="#" onClick={ (e) => selectCollection(e, symbol) }>
           {name}
         </VuiTypography>
         <VuiTypography variant="caption" color="text">
-          {description}
+          {symbol}
         </VuiTypography>
       </VuiBox>
     </VuiBox>
@@ -50,8 +55,7 @@ export default function collectionsTableData() {
             its.push( {
               collection: <Collection image={it.metadata.image} 
                 name={ it.metadata.symbol.replaceAll('_', ' ').replace(/(^\w|\s\w)/g, m => m.toUpperCase()) } 
-                email={ it.metadata.symbol } />,
-              // function: <Function job="Manager" org="Organization" />,
+                symbol={ it.metadata.symbol } />,
               'floor price': (
                 <VuiTypography variant="caption" color="white" fontWeight="medium">
                   {it.metadata.floorPrice / 1e9 }
@@ -67,21 +71,6 @@ export default function collectionsTableData() {
                   { (it.metadata.volume24hr  / 1e9).toFixed(2) }
                 </VuiTypography>
               ),
-              // status: (
-              //   <VuiBadge
-              //     variant="standard"
-              //     badgeContent="Online"
-              //     color="success"
-              //     size="xs"
-              //     container
-              //     sx={({ palette: { white, success }, borders: { borderRadius, borderWidth } }) => ({
-              //       background: success.main,
-              //       border: `${borderWidth[1]} solid ${success.main}`,
-              //       borderRadius: borderRadius.md,
-              //       color: white.main,
-              //     })}
-              //   />
-              // ),
               'Listed count': (
                 <VuiTypography variant="caption" color="white" fontWeight="medium">
                   {it.metadata.listedCount}
@@ -104,9 +93,6 @@ export default function collectionsTableData() {
                     Analysis
                   </VuiButton>
               </VuiBox>
-                // <VuiTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-                //   Stats
-                // </VuiTypography>
               ),
             });
           });
@@ -127,10 +113,8 @@ export default function collectionsTableData() {
       { name: "floor price", align: "center", numeric: true }, 
       { name: "floor price change (%)", align: "center", numeric: true }, 
       { name: "volume 24h", align: "center", numeric: true }, 
-      // { name: "status", align: "center" }, 
       { name: "Listed count", align: "center", numeric: true },
       { name: "Listed count change (%)", align: "center", numeric: true },
-      // { name: "action", align: "center" },
     ],
   
     rows: items,

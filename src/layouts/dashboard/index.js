@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* Vision UI Free React - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/vision-ui-free-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-react/blob/master LICENSE.md)
-
-* Design and Coded by Simmmple & Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { useState, useEffect } from 'react';
 import moment from 'moment'
 
@@ -86,6 +69,8 @@ export default function Dashboard() {
   const [collectionHistoryData, setCollectionHistoryData] = useState([]);
   const [historyFloorData, setHistoryFloorData] = useState([]);
   const [historyListingsData, setHistoryListingsData] = useState([]);
+  const [historyAvgPriceData, setHistoryAvgPriceData] = useState([]);
+  const [historyVolumeData, setHistoryVolumeData] = useState([]);
 
   const [isCollectionReady, setIsCollectionReady] = useState(false);
   const [change24HourPrice, setChange24HourPrice] = useState(0);
@@ -110,19 +95,28 @@ export default function Dashboard() {
 
   const [collectionProcessedData, setCollectionProcessedData]= useState([]);
 
+  const [isRank, setIsRank] = useState(false);
+
   // get collection basic data info
   useEffect(() => {
+    setIsRank(false);
     try {
       // setInterval(async () => {
-        fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}`)
-        .then(collectionResult => {
-          setCollectionData(collectionResult);
+        // fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/`)
+        // .then(collectionResult => {
+        //   setCollectionData(collectionResult);
 
           fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${symbol}/item/all`)
           .then(
             (result) => {
+              // console.log(result)
               let rankIts = [];
               let listedForIts = [];
+
+              if ("rank" in result[0]) {
+                setIsRank(true);
+                console.log(resukt[0]);
+              }
       
               result.forEach((it, idx) => {
                 if ("rank" in it) {
@@ -131,7 +125,7 @@ export default function Dashboard() {
                     x: it.rank,
                     name: it.name,
                     mintAddress: it.mintAddress,
-                    image: ("img" in it) ? it.img : collectionResult.image,
+                    image: ("img" in it) ? it.img : "", //collectionResult.image,
                   });
                 }
       
@@ -141,11 +135,10 @@ export default function Dashboard() {
                     x: it.listedFor,
                     name: it.name,
                     mintAddress: it.mintAddress,
-                    image: ("img" in it) ? it.img : collectionResult.image,
+                    image: ("img" in it) ? it.img : "", //collectionResult.image,
                   });
                 }
               });
-              
               setPriceRankData([{
                 name: "Items - price distribution",
                 data: rankIts,
@@ -157,7 +150,7 @@ export default function Dashboard() {
             },
             (error) => console.error(error)
           )
-        });
+        // });
   
 
       fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection`)
@@ -187,6 +180,8 @@ export default function Dashboard() {
       .then(data => {
         const floorHistoryArr = [];
         const historyListingsArr = [];
+        const avgPriceHistory = [];
+        const volumeHistory = [];
 
         setCollectionHistoryData(data);
         setIsCollectionReady(true);
@@ -205,10 +200,22 @@ export default function Dashboard() {
               x: it.timestamp, 
               y: it.metadata.listedCount,
             });
+
+            avgPriceHistory.push({
+              x: it.timestamp, 
+              y: (it.metadata.avgPrice24hr / 1e9).toFixed(2),
+            });
+
+            volumeHistory.push({
+              x: it.timestamp, 
+              y: (it.metadata.volume24hr / 1e9).toFixed(2),
+            });
           }); 
 
         setHistoryFloorData([{ name:"Floor price", data: floorHistoryArr }]);
         setHistoryListingsData([{ name:"Listed count", data: historyListingsArr }]);
+        setHistoryAvgPriceData([{ name:"Average price (24h)", data: avgPriceHistory }]);
+        setHistoryVolumeData([{ name:"Volume (24h)", data: volumeHistory }]);
       }); 
     // }, 5000);
     } catch(e) {
@@ -243,7 +250,7 @@ export default function Dashboard() {
               <MiniStatisticsCard
                 title={{ text: "Listed NFTs" }}
                 count={`${listedCount}`}
-                percentage={{ color: (listedCountChange.charAt(0) === '-') ?  "error" : "success", text: `${listedCountChange}` }} 
+                percentage={{ color: (listedCountChange.charAt(0) === '-') ?  "error" : "success", text: `${listedCountChange}%` }} 
                 icon={{ color: "info", component: <IoDocumentText size="22px" color="white" /> }}
               />
             </Grid>
@@ -251,7 +258,7 @@ export default function Dashboard() {
               <MiniStatisticsCard
                 title={{ text: "Floor price" }}
                 count={ `${floorPrice}` } 
-                percentage={{ color: (floorPriceChange.charAt(0) === '-') ?  "error" : "success", text: `${floorPriceChange}` }}
+                percentage={{ color: (floorPriceChange.charAt(0) === '-') ?  "error" : "success", text: `${floorPriceChange}%` }}
                 icon={{ color: "info", component: <FaShoppingCart size="20px" color="white" /> }}
               />
             </Grid>
@@ -280,7 +287,7 @@ export default function Dashboard() {
                   </VuiTypography>
                   <VuiBox display="flex" alignItems="center" mb="40px">
                     <VuiTypography variant="button" color={ (floorPriceChange.charAt(0) === '-') ?  "error" : "success"} fontWeight="bold">
-                      {`${floorPriceChange} `}
+                      {`${floorPriceChange} %`}
                       <VuiTypography variant="button" color="text" fontWeight="regular">
                         in last 24 hours
                       </VuiTypography>
@@ -296,7 +303,7 @@ export default function Dashboard() {
               </Card>
             </Grid>
             <Grid item xs={12} lg={6} xl={5}>
-              <HoldersOverview symbol={symbol}/>
+              <TransactionsOverview symbol={symbol}/>
             </Grid>
           </Grid>
         </VuiBox>
@@ -310,7 +317,7 @@ export default function Dashboard() {
                   </VuiTypography>
                   <VuiBox display="flex" alignItems="center" mb="40px">
                   <VuiTypography variant="button" color={ (listedCountChange.charAt(0) === '-') ?  "error" : "success"} fontWeight="bold">
-                      {`${listedCountChange} `}
+                      {`${listedCountChange} %`}
                       <VuiTypography variant="button" color="text" fontWeight="regular">
                         in last 24 hours
                       </VuiTypography>
@@ -326,7 +333,41 @@ export default function Dashboard() {
               </Card>
             </Grid>
             <Grid item xs={12} lg={6} xl={5}>
-            <TransactionsOverview symbol={symbol}/>
+              <HoldersOverview symbol={symbol} isRank={isRank}/>
+            </Grid>
+          </Grid>
+        </VuiBox>
+        <VuiBox mb={3}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} lg={6} xl={6}>
+              <Card>
+                <VuiBox sx={{ height: "100%" }}>
+                  <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
+                    Average price (24h)
+                  </VuiTypography>
+                  <VuiBox sx={{ height: "310px" }}>
+                    <LineChart
+                      lineChartData={  historyAvgPriceData }
+                      lineChartOptions={historyFloorPriceOptionsDashboard}
+                    />
+                  </VuiBox>
+                </VuiBox>
+              </Card>
+            </Grid>
+            <Grid item xs={12} lg={6} xl={6}>
+              <Card>
+                <VuiBox sx={{ height: "100%" }}>
+                  <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
+                    Volume change (24h)
+                  </VuiTypography>
+                  <VuiBox sx={{ height: "310px" }}>
+                    <LineChart
+                      lineChartData={  historyVolumeData }
+                      lineChartOptions={historyFloorPriceOptionsDashboard}
+                    />
+                  </VuiBox>
+                </VuiBox>
+              </Card>
             </Grid>
           </Grid>
         </VuiBox>
@@ -342,6 +383,7 @@ export default function Dashboard() {
                   <ItemPriceDistribution
                       symbol={symbol}
                       chartData={priceRankData}
+                      isRank={isRank}
                     />
                   </VuiBox>
                 </VuiBox>
@@ -361,6 +403,7 @@ export default function Dashboard() {
                   <ItemListedForDistribution
                       symbol={symbol}
                       chartData={priceListedForData}
+                      isRank={isRank}
                     />
                   </VuiBox>
                 </VuiBox>

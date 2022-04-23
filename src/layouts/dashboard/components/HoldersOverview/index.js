@@ -32,11 +32,11 @@ import Table from "examples/Tables/Table";
 
 import holdersTableData from "layouts/dashboard/components/HoldersOverview/data/holdersTableData";
 
-export default function HoldersOverview({symbol}) {
+export default function HoldersOverview({symbol, isRank}) {
   const { columns, rows } = holdersTableData({symbol});
   const ownedByTop = (rows && rows.length !== 0) ? rows.reduce((accumulator, curr) => accumulator + curr.count.props.children, 0) : 0;
 
-  return (
+  return (isRank) ? (
     <Card className="h-100">
       <VuiBox>
         <VuiTypography variant="lg" fontWeight="bold" mb="5px" color="white">
@@ -57,6 +57,14 @@ export default function HoldersOverview({symbol}) {
       </VuiBox>
       <VuiBox>
         <Table columns={columns} rows={rows.slice(0,6)} />
+      </VuiBox>
+    </Card>
+  ) : (
+    <Card className="h-100">
+      <VuiBox>
+        <VuiTypography variant="lg" mb="5px" color="warning">
+          This collection does not have rarity.
+        </VuiTypography>
       </VuiBox>
     </Card>
   );
