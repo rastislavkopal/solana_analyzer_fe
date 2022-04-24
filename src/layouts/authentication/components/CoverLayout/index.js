@@ -97,7 +97,7 @@ function CoverLayout({
         >
           <VuiTypography
             textAlign={cardContent ? "center" : "start"}
-            variant="subtitle1"
+            variant="h4"
             fontWeight="medium"
             color="white"
             mb="10px"
@@ -107,7 +107,7 @@ function CoverLayout({
           </VuiTypography>
           <VuiTypography
             textAlign={cardContent ? "center" : "start"}
-            variant="h2"
+            variant="h1"
             fontWeight="bold"
             color="logo"
             mb="10px"

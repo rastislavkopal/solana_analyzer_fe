@@ -86,7 +86,9 @@ export default function ItemsNavbar({ absolute, light, isMini, collections, isRa
 
   useEffect(() => {
     if (collections && collections.length > 0) {
-      const menu = collections.map((el, idx) => <MenuItem value={el.symbol}>{el.name}</MenuItem>);
+      const menu = collections.sort((a,b) => {
+        return  a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
+      }).map((el, idx) => <MenuItem value={el.symbol}>{el.name}</MenuItem>);
 
       // setSelectedSymbol(menu[0].props.value)
       // setSelectedSymbolName(menu[0].props.value)

@@ -32,7 +32,7 @@ export default function Item({data, rankLimit, isRank}) {
         sx={{
             background: (isRank && 'rarity' in data 
                         && "howrare" in data.rarity && data.rarity.howrare.rank < rankLimit) ? 
-                        linearGradient("#c74438", "#a61f12")  : 
+                        linearGradient("#12163d", "#29318a")  : 
                         linearGradient(cardContent.main, cardContent.state, cardContent.deg),
             minHeight: "110px",
             borderRadius: "20px",

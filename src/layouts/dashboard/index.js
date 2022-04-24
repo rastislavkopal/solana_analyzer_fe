@@ -211,7 +211,12 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar collections={collections} historyInterval={historyInterval} setHistoryInterval={setHistoryInterval}  />
+      <DashboardNavbar
+        collections={collections}
+        historyInterval={historyInterval}
+        setHistoryInterval={setHistoryInterval}
+        collectionData={collectionData}
+      />
       <VuiBox py={3}>
         <VuiBox mb={3}>
           <Grid container spacing={3}>
@@ -235,7 +240,7 @@ export default function Dashboard() {
               <MiniStatisticsCard
                 title={{ text: "Listed NFTs" }}
                 count={`${listedCount}`}
-                percentage={{ color: (listedCountChange.charAt(0) === '-') ?  "error" : "success", text: `${listedCountChange}%` }} 
+                percentage={{ color: (listedCountChange.charAt(0) === '-') ?  "success" : "error", text: `${listedCountChange}%` }} 
                 icon={{ color: "info", component: <IoDocumentText size="22px" color="white" /> }}
               />
             </Grid>
@@ -270,14 +275,14 @@ export default function Dashboard() {
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                     Floor price history
                   </VuiTypography>
-                  <Tooltip placement="top" title="Floor price history chart">
+                  <Tooltip placement="top" title="History of the lowest price of an NFT from this collection.">
                     <IconButton>
                       <FaQuestionCircle size="20px" color="white" /> 
                     </IconButton>
                   </Tooltip>
                   <VuiBox display="flex" alignItems="center" mb="40px">
                     <VuiTypography variant="button" color={ (floorPriceChange.charAt(0) === '-') ?  "error" : "success"} fontWeight="bold">
-                      {`${floorPriceChange} %`}
+                      {`${floorPriceChange}%`}
                       <VuiTypography variant="button" color="text" fontWeight="regular">
                         in last 24 hours
                       </VuiTypography>
@@ -312,14 +317,14 @@ export default function Dashboard() {
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                     Listed history
                   </VuiTypography>
-                  <Tooltip placement="top" title="Count of listed items.">
+                  <Tooltip placement="top" title="History of how many NFTs were listed from this collection on the market.">
                     <IconButton>
                       <FaQuestionCircle size="20px" color="white" /> 
                     </IconButton>
                   </Tooltip>
                   <VuiBox display="flex" alignItems="center" mb="40px">
                   <VuiTypography variant="button" color={ (listedCountChange.charAt(0) === '-') ?  "error" : "success"} fontWeight="bold">
-                      {`${listedCountChange} %`}
+                      {`${listedCountChange}%`}
                       <VuiTypography variant="button" color="text" fontWeight="regular">
                         in last 24 hours
                       </VuiTypography>
@@ -354,7 +359,7 @@ export default function Dashboard() {
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                     Average price (24h)
                   </VuiTypography>
-                  <Tooltip placement="top" title="Average price history.">
+                  <Tooltip placement="top" title="History of the average (24h) price of all NFTs from this collection.">
                     <IconButton>
                       <FaQuestionCircle size="20px" color="white" /> 
                     </IconButton>
@@ -381,7 +386,7 @@ export default function Dashboard() {
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                     Volume change (24h)
                   </VuiTypography>
-                  <Tooltip placement="top" title="Volume change history (24h).">
+                  <Tooltip placement="top" title="History of volume change (24h) of collection.">
                     <IconButton>
                       <FaQuestionCircle size="20px" color="white" /> 
                     </IconButton>
@@ -412,7 +417,7 @@ export default function Dashboard() {
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                   Price vs. Rank
                   </VuiTypography>
-                  <Tooltip placement="top" title="Items distribution - price vs rank.">
+                  <Tooltip placement="top" title="We recommend looking out for items in bottom left as there are the cheapest NFT with highest rank.">
                     <IconButton>
                       <FaQuestionCircle size="20px" color="white" /> 
                     </IconButton>

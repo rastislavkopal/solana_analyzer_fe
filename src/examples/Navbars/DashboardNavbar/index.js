@@ -12,6 +12,7 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import Icon from "@mui/material/Icon";
+import Grid from '@mui/material/Grid';
 
 // Vision UI Dashboard React components
 import VuiBox from "components/VuiBox";
@@ -55,7 +56,7 @@ import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 import { useRecoilState } from 'recoil';
 import { symbolAtom } from '_state/appSymbol';
 
-export default function DashboardNavbar({ absolute, light, isMini, collections, historyInterval, setHistoryInterval }) {
+export default function DashboardNavbar({ absolute, light, isMini, collections, historyInterval, setHistoryInterval, collectionData }) {
   
   const userActions = useUserActions();
   const [appSymbol, setAppSymbol] = useRecoilState(symbolAtom);
@@ -72,7 +73,7 @@ export default function DashboardNavbar({ absolute, light, isMini, collections, 
   const [openInterval, setOpenInterval] = useState(false);
   const [selectMenu, setSelectMenu] = useState([]);
 
-  const [localInterval, setLocalInterval] = useState(1);
+  const [localInterval, setLocalInterval] = useState(1440);
 
   const intervalsMenu = {
     1: <MenuItem value="1">{"1m"}</MenuItem>,
@@ -98,7 +99,9 @@ export default function DashboardNavbar({ absolute, light, isMini, collections, 
 
   useEffect(() => {
     if (collections && collections.length > 0) {
-      const menu = collections.map((el, idx) => <MenuItem value={el.symbol}>{el.name}</MenuItem>);
+      const menu = collections.sort((a,b) => {
+        return  a.name.localeCompare(b.name, 'en', { sensitivity: 'base' });
+      }).map((el, idx) => <MenuItem value={el.symbol}>{el.name}</MenuItem>);
 
       setSelectMenu(menu);
     }
@@ -187,6 +190,33 @@ export default function DashboardNavbar({ absolute, light, isMini, collections, 
         <VuiBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
           <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
         </VuiBox>
+        {isMini ? null : (
+          <VuiBox sx={{ margin: "auto", minWidth: "250px" }}>
+            <Grid container>
+              <Grid item xs={6}
+                component="img"
+                sx={{
+                  height: 60,
+                  width: 60,
+                  maxHeight: { xs: 60, md: 60 },
+                  maxWidth: { xs: 60, md: 60 },
+                }}
+                alt="Collection image."
+                src={collectionData.image}
+              />
+              <Grid item xs={6} sx={{minWidth: "180px", display: 'flex', alignItems: 'center'}}>
+                <VuiTypography
+                  variant="subtitle2"
+                  fontWeight="regular"
+                  color="white"
+                  sx={{ ml: "5px" }}
+                >
+                  {collectionData.name}
+                </VuiTypography>
+              </Grid>
+            </Grid>
+          </VuiBox>
+        )}
         {isMini ? null : (
           <VuiBox sx={(theme) => navbarRow(theme, { isMini })}>
             <VuiBox pr={1}>

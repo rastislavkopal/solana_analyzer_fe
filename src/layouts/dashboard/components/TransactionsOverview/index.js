@@ -26,7 +26,7 @@ export default function TransactionsOverview({symbol}) {
         <VuiTypography variant="lg" fontWeight="bold" mb="5px" color="white">
           Last transactions
         </VuiTypography>
-        <Tooltip placement="top" title="List of last transactions.">
+        <Tooltip placement="top" title="History of the latest buy transactions.">
           <IconButton>
             <FaQuestionCircle size="20px" color="white" /> 
           </IconButton>

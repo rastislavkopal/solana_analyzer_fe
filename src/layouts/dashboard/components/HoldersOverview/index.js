@@ -26,7 +26,7 @@ export default function HoldersOverview({symbol, isRank}) {
         <VuiTypography variant="lg" fontWeight="bold" mb="5px" color="white">
           Top holders
         </VuiTypography>
-        <Tooltip placement="top" title="Top holders of collection.">
+        <Tooltip placement="top" title="List of top holders from this collection and their respective NFT count.">
           <IconButton>
             <FaQuestionCircle size="20px" color="white" /> 
           </IconButton>
