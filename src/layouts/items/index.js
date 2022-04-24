@@ -80,17 +80,17 @@ export default function Items() {
 return (
 <DashboardLayout>
     <ItemsNavbar collections={collections} isRank={isRank} rankLimit={rankLimit} setRankLimit={setRankLimit}/>
-    
+    { items.length === 0 && 
+      <Box sx={{ display: 'flex', width: "100%", mt: "10px" }}>
+        <CircularProgress sx={{ margin: 'auto' }} />
+      </Box>
+    }
     {/* <VuiBox py={3} display="flex" mb="14px" justifyContent="space-between" alignItems="center" > */}
         <InfiniteScroll
         dataLength={items.length}
         next={fetchMoreData}
         hasMore={hasMore}
-        loader={
-          <Box sx={{ display: 'flex', width: "100%", mt: "10px" }}>
-            <CircularProgress sx={{ margin: 'auto' }} />
-          </Box>
-        }
+        loader={<h5>Loading...</h5>}
         endMessage={
             <p style={{ textAlign: "center" }}>
             <b>End reached</b>
