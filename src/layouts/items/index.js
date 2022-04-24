@@ -37,7 +37,7 @@ export default function Items() {
         setHasMore( false );
         return;
     }
-   fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/forward?q={"$match":{"collectionSymbol":"${appSymbol}"},"$sort":{"takerAmount":1},"$skip":${items.length},"$limit":20,"status":[]}`)
+   fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/me/forward?q={"$match":{"collectionSymbol":"${appSymbol}"},"$sort":{"takerAmount":1},"$skip":${items.length},"$limit":20,"status":[]}`)
     .then(result => {
       setItems(items.concat(result.results)); 
     });
@@ -48,7 +48,7 @@ export default function Items() {
   useEffect(() => {
     try {
     setItems([]);
-    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/forward?q={"$match":{"collectionSymbol":"${appSymbol}"},"$sort":{"takerAmount":1},"$skip":0,"$limit":20,"status":[]}`)
+    fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/me/forward?q={"$match":{"collectionSymbol":"${appSymbol}"},"$sort":{"takerAmount":1},"$skip":0,"$limit":20,"status":[]}`)
     .then(result => {
       setItems(result.results);
       
