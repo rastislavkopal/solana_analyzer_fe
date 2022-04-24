@@ -1,24 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import moment from 'moment'
 
-// @mui material components
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import Grid from "@mui/material/Grid";
 import Icon from "@mui/material/Icon";
-import { Card, LinearProgress, Stack } from "@mui/material";
 
-// Vision UI Dashboard React components
-import VuiBox from "components/VuiBox";
-import VuiTypography from "components/VuiTypography";
-import VuiProgress from "components/VuiProgress";
-
-// Vision UI Dashboard React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import ItemsNavbar from "examples/Navbars/ItemsNavbar";
-import Footer from "examples/Footer";
-
-// Vision UI Dashboard React base styles
-import typography from "assets/theme/base/typography";
-import colors from "assets/theme/base/colors";
 
 import { useFetchWrapper } from "_helpers/fetch_wrapper";
 
@@ -98,7 +86,11 @@ return (
         dataLength={items.length}
         next={fetchMoreData}
         hasMore={hasMore}
-        loader={<h4>Loading...</h4>}
+        loader={
+          <Box sx={{ display: 'flex', width: "100%", mt: "10px" }}>
+            <CircularProgress sx={{ margin: 'auto' }} />
+          </Box>
+        }
         endMessage={
             <p style={{ textAlign: "center" }}>
             <b>End reached</b>

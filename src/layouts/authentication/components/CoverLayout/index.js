@@ -147,7 +147,7 @@ function CoverLayout({
             },
           })}
         >
-          <VuiBox pt={3} px={3} mx="auto !important" maxWidth={cardContent ? "400px" : "350px"}>
+          <VuiBox pt={14} px={3} mx="auto !important" maxWidth={cardContent ? "400px" : "350px"}>
             {!header ? (
               <>
                 <VuiBox mb="35px">

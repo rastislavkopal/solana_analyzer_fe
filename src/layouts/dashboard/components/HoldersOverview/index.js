@@ -1,21 +1,3 @@
-/*!
-
-=========================================================
-* Vision UI Free React - v1.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/vision-ui-free-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com/)
-* Licensed under MIT (https://github.com/creativetimofficial/vision-ui-free-react/blob/master LICENSE.md)
-
-* Design and Coded by Simmmple & Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
 import React, { useState, useEffect } from 'react';
 
 // @mui material components
@@ -25,7 +7,9 @@ import Card from "@mui/material/Card";
 import VuiBox from "components/VuiBox";
 import VuiTypography from "components/VuiTypography";
 
-// React icons
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import { FaQuestionCircle } from "react-icons/fa";
 import { BsCheckCircleFill } from "react-icons/bs";
 
 import Table from "examples/Tables/Table";
@@ -42,6 +26,11 @@ export default function HoldersOverview({symbol, isRank}) {
         <VuiTypography variant="lg" fontWeight="bold" mb="5px" color="white">
           Top holders
         </VuiTypography>
+        <Tooltip placement="top" title="Top holders of collection.">
+          <IconButton>
+            <FaQuestionCircle size="20px" color="white" /> 
+          </IconButton>
+        </Tooltip>
         <VuiBox mb={2}>
           <VuiBox display="flex" alignItems="center">
             <BsCheckCircleFill color="green" size="15px" mr="5px" />

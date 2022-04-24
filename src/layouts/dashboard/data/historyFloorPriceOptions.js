@@ -15,35 +15,18 @@ export const historyFloorPriceOptionsDashboard = {
     stroke: {
       curve: "smooth",
     },
-    // xaxis: {
-    //   type: "datetime",
-    //   categories: [
-    //     "Jan",
-    //     "Feb",
-    //     "Mar",
-    //     "Apr",
-    //     "May",
-    //     "Jun",
-    //     "Jul",
-    //     "Aug",
-    //     "Sep",
-    //     "Oct",
-    //     "Nov",
-    //     "Dec",
-    //   ],
-    //   labels: {
-    //     style: {
-    //       colors: "#c8cfca",
-    //       fontSize: "10px",
-    //     },
-    //   },
-    //   axisBorder: {
-    //     show: false,
-    //   },
-    //   axisTicks: {
-    //     show: false,
-    //   },
-    // },
+    noData: {  
+      text: "Loading data...",  
+      align: 'center',  
+      verticalAlign: 'middle',  
+      offsetX: 0,  
+      offsetY: 0,  
+      style: {  
+        color: "#ffffff",  
+        fontSize: '20px',  
+        fontFamily: "Helvetica"  
+      }  
+    },
     xaxis: {
         type: "datetime",
         labels: {

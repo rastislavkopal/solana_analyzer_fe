@@ -4,6 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Grid from "@mui/material/Grid";
 import Icon from "@mui/material/Icon";
 import { Card, LinearProgress, Stack } from "@mui/material";
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 // Vision UI Dashboard React components
 import VuiBox from "components/VuiBox";
@@ -28,7 +32,7 @@ import { IoGlobe } from "react-icons/io5";
 import { IoWallet } from "react-icons/io5";
 import { VscRocket } from "react-icons/vsc"
 import { IoDocumentText } from "react-icons/io5";
-import { FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart, FaQuestionCircle } from "react-icons/fa";
 
 // Data
 import LineChart from "examples/Charts/LineCharts/LineChart";
@@ -78,10 +82,14 @@ export default function Dashboard() {
   const [collectionProcessedData, setCollectionProcessedData]= useState([]);
 
   const [isRank, setIsRank] = useState(false);
+  const [isItemAllReady, setIsItemAllReady] = useState(false);
+  const [isMetadataReady, setIsMetadataReady] = useState(false);
 
   // get collection basic data info
   useEffect(() => {
     setIsRank(false);
+    setIsItemAllReady(false);
+    setIsMetadataReady(false);
     try {
       // setInterval(async () => {
         fetchWrapper.get(`${process.env.REACT_APP_API_BASE}/collection/${appSymbol}/`)
@@ -98,9 +106,8 @@ export default function Dashboard() {
               if ("rank" in result[0]) {
                 setIsRank(true);
               }
-      
               result.forEach((it, idx) => {
-                if ("rank" in it) {
+                if ("rank" in it && it.forSale === true) {
                   rankIts.push({
                     y: it.price, 
                     x: it.rank,
@@ -110,7 +117,7 @@ export default function Dashboard() {
                   });
                 }
       
-                if ("listedFor" in it) {
+                if ("listedFor" in it && it.forSale === true) {
                   listedForIts.push({
                     y: it.price, 
                     x: it.listedFor,
@@ -128,6 +135,7 @@ export default function Dashboard() {
                 name: "Items - listed for distribution",
                 data: listedForIts,
               }]);
+              setIsItemAllReady(true);
             },
             (error) => console.error(error)
           )
@@ -192,6 +200,7 @@ export default function Dashboard() {
         setHistoryListingsData([{ name:"Listed count", data: historyListingsArr }]);
         setHistoryAvgPriceData([{ name:"Average price (24h)", data: avgPriceHistory }]);
         setHistoryVolumeData([{ name:"Volume (24h)", data: volumeHistory }]);
+        setIsMetadataReady(true);
       }); 
     // }, 5000);
     } catch(e) {
@@ -261,6 +270,11 @@ export default function Dashboard() {
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                     Floor price history
                   </VuiTypography>
+                  <Tooltip placement="top" title="Floor price history chart">
+                    <IconButton>
+                      <FaQuestionCircle size="20px" color="white" /> 
+                    </IconButton>
+                  </Tooltip>
                   <VuiBox display="flex" alignItems="center" mb="40px">
                     <VuiTypography variant="button" color={ (floorPriceChange.charAt(0) === '-') ?  "error" : "success"} fontWeight="bold">
                       {`${floorPriceChange} %`}
@@ -270,10 +284,17 @@ export default function Dashboard() {
                     </VuiTypography>
                   </VuiBox>
                   <VuiBox sx={{ height: "310px" }}>
-                    <LineChart
-                      lineChartData={historyFloorData}
-                      lineChartOptions={historyFloorPriceOptionsDashboard}
-                    />
+                    { !isMetadataReady && 
+                      <Box sx={{ display: 'flex', width: "100%" }}>
+                      <CircularProgress sx={{ margin: 'auto', mt: '110px' }} />
+                    </Box>
+                    }
+                    { isMetadataReady &&
+                      <LineChart
+                        lineChartData={historyFloorData}
+                        lineChartOptions={historyFloorPriceOptionsDashboard}
+                      />
+                    }
                   </VuiBox>
                 </VuiBox>
               </Card>
@@ -291,6 +312,11 @@ export default function Dashboard() {
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                     Listed history
                   </VuiTypography>
+                  <Tooltip placement="top" title="Count of listed items.">
+                    <IconButton>
+                      <FaQuestionCircle size="20px" color="white" /> 
+                    </IconButton>
+                  </Tooltip>
                   <VuiBox display="flex" alignItems="center" mb="40px">
                   <VuiTypography variant="button" color={ (listedCountChange.charAt(0) === '-') ?  "error" : "success"} fontWeight="bold">
                       {`${listedCountChange} %`}
@@ -300,10 +326,17 @@ export default function Dashboard() {
                     </VuiTypography>
                   </VuiBox>
                   <VuiBox sx={{ height: "310px" }}>
-                    <LineChart
-                      lineChartData={historyListingsData}
-                      lineChartOptions={historyFloorPriceOptionsDashboard}
-                    />
+                  { !isMetadataReady && 
+                      <Box sx={{ display: 'flex', width: "100%" }}>
+                      <CircularProgress sx={{ margin: 'auto', mt: '110px' }} />
+                    </Box>
+                    }
+                    { isMetadataReady &&
+                      <LineChart
+                        lineChartData={historyListingsData}
+                        lineChartOptions={historyFloorPriceOptionsDashboard}
+                      />
+                    }
                   </VuiBox>
                 </VuiBox>
               </Card>
@@ -321,11 +354,23 @@ export default function Dashboard() {
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                     Average price (24h)
                   </VuiTypography>
+                  <Tooltip placement="top" title="Average price history.">
+                    <IconButton>
+                      <FaQuestionCircle size="20px" color="white" /> 
+                    </IconButton>
+                  </Tooltip>
                   <VuiBox sx={{ height: "310px" }}>
-                    <LineChart
-                      lineChartData={  historyAvgPriceData }
-                      lineChartOptions={historyFloorPriceOptionsDashboard}
-                    />
+                  { !isMetadataReady && 
+                      <Box sx={{ display: 'flex', width: "100%" }}>
+                      <CircularProgress sx={{ margin: 'auto', mt: '110px' }} />
+                    </Box>
+                    }
+                    { isMetadataReady &&
+                      <LineChart
+                        lineChartData={  historyAvgPriceData }
+                        lineChartOptions={historyFloorPriceOptionsDashboard}
+                      />
+                    }
                   </VuiBox>
                 </VuiBox>
               </Card>
@@ -336,11 +381,23 @@ export default function Dashboard() {
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                     Volume change (24h)
                   </VuiTypography>
+                  <Tooltip placement="top" title="Volume change history (24h).">
+                    <IconButton>
+                      <FaQuestionCircle size="20px" color="white" /> 
+                    </IconButton>
+                  </Tooltip>
                   <VuiBox sx={{ height: "310px" }}>
-                    <LineChart
-                      lineChartData={  historyVolumeData }
-                      lineChartOptions={historyFloorPriceOptionsDashboard}
-                    />
+                  { !isMetadataReady && 
+                      <Box sx={{ display: 'flex', width: "100%" }}>
+                      <CircularProgress sx={{ margin: 'auto', mt: '110px' }} />
+                    </Box>
+                    }
+                    { isMetadataReady &&
+                      <LineChart
+                        lineChartData={  historyVolumeData }
+                        lineChartOptions={historyFloorPriceOptionsDashboard}
+                      />
+                    }
                   </VuiBox>
                 </VuiBox>
               </Card>
@@ -355,19 +412,32 @@ export default function Dashboard() {
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                   Price vs. Rank
                   </VuiTypography>
+                  <Tooltip placement="top" title="Items distribution - price vs rank.">
+                    <IconButton>
+                      <FaQuestionCircle size="20px" color="white" /> 
+                    </IconButton>
+                  </Tooltip>
                   <VuiBox sx={{ height: "400px" }}>
-                  <ItemPriceDistribution
-                      symbol={appSymbol}
-                      chartData={priceRankData}
-                      isRank={isRank}
-                    />
+                  { !isItemAllReady && 
+                      <Box sx={{ display: 'flex', width: "100%" }}>
+                      <CircularProgress sx={{ margin: 'auto', mt: '110px' }} />
+                    </Box>
+                    }
+                    { isItemAllReady &&
+                      <ItemPriceDistribution
+                        symbol={appSymbol}
+                        chartData={priceRankData}
+                        isRank={isRank}
+                      />
+                    }
+
                   </VuiBox>
                 </VuiBox>
               </Card>
             </Grid>
           </Grid>
         </VuiBox>
-        <VuiBox mb={3}>
+        {/* <VuiBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={12} xl={12}>
               <Card>
@@ -375,6 +445,11 @@ export default function Dashboard() {
                   <VuiTypography variant="lg" color="white" fontWeight="bold" mb="5px">
                     Price vs Listing duration
                   </VuiTypography>
+                  <Tooltip placement="top" title="Items distribution - price vs listing duration.">
+                    <IconButton>
+                      <FaQuestionCircle size="20px" color="white" /> 
+                    </IconButton>
+                  </Tooltip>
                   <VuiBox sx={{ height: "400px" }}>
                   <ItemListedForDistribution
                       symbol={appSymbol}
@@ -386,7 +461,7 @@ export default function Dashboard() {
               </Card>
             </Grid>
           </Grid>
-        </VuiBox>
+        </VuiBox> */}
       </VuiBox>
       <Footer />
     </DashboardLayout>

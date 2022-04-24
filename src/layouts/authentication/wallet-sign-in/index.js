@@ -50,24 +50,7 @@ import { useRecoilValue } from 'recoil';
 import { authAtom } from '_state/auth';
 import { useUserActions } from '_actions/user.actions';
 
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import {
-    GlowWalletAdapter,
-    LedgerWalletAdapter,
-    PhantomWalletAdapter,
-    SlopeWalletAdapter,
-    SolflareWalletAdapter,
-    SolletExtensionWalletAdapter,
-    SolletWalletAdapter,
-    TorusWalletAdapter,
-} from '@solana/wallet-adapter-wallets';
-import {
-    WalletModalProvider,
-    WalletDisconnectButton,
-    WalletMultiButton
-} from '@solana/wallet-adapter-react-ui';
-import { clusterApiUrl } from '@solana/web3.js';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 import SolanaSignInButton from './solana-sign-in-button';
 
@@ -95,8 +78,9 @@ function WalletSignIn() {
       motto="SOLYSIS"
     >
       <VuiBox>
-        <WalletMultiButton />
-
+        <VuiBox mt={4} ml={1}>
+          <WalletMultiButton />
+        </VuiBox>
         <VuiBox mt={4} mb={1}>
           <SolanaSignInButton />
         </VuiBox>

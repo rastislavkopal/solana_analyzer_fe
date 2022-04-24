@@ -14,6 +14,9 @@ import Table from "examples/Tables/sortableTable/collectionsTable";
 // Data
 import collectionsTableData from "layouts/tables/data/collectionsTableData";
 
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+
 export default function Tables() {
   const { columns, rows } = collectionsTableData();
 
@@ -43,6 +46,11 @@ export default function Tables() {
               }}
             >
               <Table columns={columns} rows={rows} />
+              { rows.length == 0 && 
+                <Box sx={{ display: 'flex', width: "100%" }}>
+                  <CircularProgress sx={{ margin: 'auto' }} />
+                </Box>
+              }
             </VuiBox>
           </Card>
         </VuiBox>
